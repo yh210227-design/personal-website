@@ -7,28 +7,24 @@
     <style>
         /* --- 核心变量：Apple/微软原生字体 + 小众高级暗黑 --- */
         :root {
-            /* 强制调用 Apple 和 Microsoft 的原生系统字体 */
             --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
             --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
             
-            --bg-deep: #050507; /* 极深邃的背景 */
+            --bg-deep: #050507; 
             --glass-bg: rgba(255, 255, 255, 0.02);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f0f0f2;
             --text-sub: #8a8a93;
-            --accent-green: #00e559; /* 小众的荧光薄荷绿 */
+            --accent-green: #00e559; 
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font-sys);
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased; /* 苹果字体平滑渲染 */
+            font-family: var(--font-sys); background-color: var(--bg-deep);
+            color: var(--text-main); line-height: 1.6; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- 导航栏 --- */
@@ -41,7 +37,7 @@
         nav a { color: var(--text-sub); text-decoration: none; font-size: 14px; transition: var(--transition); }
         nav a:hover, nav a.active { color: var(--text-main); }
 
-        /* --- 基础布局与卡片 --- */
+        /* --- 基础布局 --- */
         .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px 40px; }
         section { margin-bottom: 80px; }
         .section-title { font-size: 14px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
@@ -49,56 +45,61 @@
         .glass-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border);
             border-radius: 16px; padding: 24px; transition: var(--transition);
+            position: relative; overflow: hidden; cursor: pointer;
         }
-        .glass-card:hover { border-color: rgba(0, 229, 89, 0.3); }
+        .glass-card:hover { border-color: rgba(0, 229, 89, 0.3); transform: translateY(-3px); }
+        .glass-card::after {
+            content: '↗ 点击查看详情'; position: absolute; top: 24px; right: 24px;
+            font-size: 12px; color: var(--accent-green); opacity: 0; transition: var(--transition);
+        }
+        .glass-card:hover::after { opacity: 1; }
 
-        /* --- 1. Hero 决战区 --- */
+        /* --- 1. Hero & 自我评价 --- */
         .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
         .hero h1 { font-size: clamp(32px, 5vw, 64px); font-weight: 600; letter-spacing: -1px; margin-bottom: 16px; }
-        .hero p { color: var(--text-sub); font-size: 18px; max-width: 600px; margin-bottom: 30px; }
+        .hero p { color: var(--text-sub); font-size: 16px; max-width: 700px; margin-bottom: 10px; }
+        .self-eval { background: rgba(0, 229, 89, 0.05); border-left: 3px solid var(--accent-green); padding: 15px 20px; font-size: 14px; color: #ccc; margin-bottom: 30px; border-radius: 0 8px 8px 0; max-width: 800px;}
         
-        /* 交互按钮 */
         .btn {
             background: transparent; color: var(--text-main); border: 1px solid var(--glass-border);
-            padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer;
-            transition: var(--transition); font-family: var(--font-sys);
+            padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: var(--font-sys);
         }
         .btn:hover { background: var(--text-main); color: var(--bg-deep); }
         .btn-primary { background: var(--accent-green); color: #000; border: none; font-weight: 600; }
         .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 89, 0.4); background: #00ff66; }
 
-        /* --- 2. 动态经历展示区 (Admin 可添加) --- */
+        /* --- 教育经历特区 --- */
+        .edu-bar { display: flex; justify-content: space-between; align-items: center; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 15px 20px; border-radius: 12px; margin-bottom: 40px; flex-wrap: wrap; gap: 10px; }
+        .edu-info { display: flex; gap: 20px; font-size: 14px; color: var(--text-main); }
+        .edu-courses { font-size: 12px; color: var(--text-sub); width: 100%; margin-top: 5px; }
+
+        /* --- 2. 动态经历展示区 --- */
         .exp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .exp-tag { display: inline-block; font-size: 12px; font-family: var(--font-mono); color: var(--accent-green); background: rgba(0, 229, 89, 0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 10px; }
+        .exp-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); margin-bottom: 8px; display: block; }
+        .exp-tag { display: inline-block; font-size: 12px; font-family: var(--font-mono); color: var(--accent-green); background: rgba(0, 229, 89, 0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; }
 
-        /* --- 3. 黑客留言板 (Terminal) --- */
-        .terminal {
-            background: #000; border: 1px solid #1a1a1a; border-radius: 12px;
-            padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6;
-        }
+        /* --- 3. 黑客留言板 --- */
+        .terminal { background: #000; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
         .terminal-output { height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .msg-line { display: flex; gap: 10px; }
-        .msg-time { color: #555; }
         .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #333; padding-top: 15px; }
         .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
-        .terminal-input-group input {
-            flex: 1; background: transparent; border: none; color: #fff;
-            font-family: var(--font-mono); font-size: 13px; outline: none;
-        }
+        .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
 
-        /* --- 全局模态框 (Modal) - 用于简历预览和添加经历 --- */
+        /* --- 全局模态框 (Modal) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             z-index: 2000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content {
             background: var(--bg-deep); border: 1px solid var(--glass-border);
-            border-radius: 16px; width: 90%; max-width: 600px; padding: 30px; position: relative;
+            border-radius: 16px; width: 90%; max-width: 650px; padding: 40px; position: relative;
+            max-height: 90vh; overflow-y: auto;
         }
-        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 20px; }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 24px; transition: 0.3s; }
+        .close-btn:hover { color: #fff; transform: rotate(90deg); }
         
         /* 表单样式 */
         .form-group { margin-bottom: 20px; }
@@ -109,32 +110,49 @@
         }
         .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-green); }
 
-        /* 简历预览框特定样式 */
-        #resume-modal .modal-content { max-width: 800px; height: 80vh; display: flex; flex-direction: column; }
-        .resume-paper { background: #fff; color: #000; flex: 1; border-radius: 8px; padding: 30px; overflow-y: auto; font-family: var(--font-sys); margin-top: 10px; }
+        /* 详情展示框特定样式 */
+        .detail-time { font-family: var(--font-mono); color: var(--text-sub); font-size: 13px; margin-bottom: 10px; }
+        .detail-title { font-size: 24px; color: #fff; margin-bottom: 15px; }
+        .detail-body { font-size: 15px; color: #ccc; line-height: 1.8; white-space: pre-wrap; margin-top: 20px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid var(--glass-border); }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#hero">主页</a>
-        <a href="#experience">实战战纪</a>
+        <a href="#hero">档案首页</a>
+        <a href="#experience">实战与研究</a>
         <a href="#guestbook">终端通信</a>
     </nav>
 
     <div class="container">
         <section class="hero" id="hero">
             <h1>李俊辉</h1>
-            <p>网络与空间安全专业。主攻 Web 攻防、PHP 代码审计。用网络安全的矛，铸造交互式 Web 的盾。</p>
+            <p><strong>意向岗位：</strong>网络安全实习生</p>
+            <p style="margin-bottom: 20px;">用网络安全的矛，铸造交互式 Web 的盾。</p>
+            
+            <div class="self-eval">
+                “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，对容器化等新技术保持高度敏感，能快速融入互联网大厂的工作节奏。”
+            </div>
+
             <div style="display: flex; gap: 15px; align-items: center;">
-                <button class="btn btn-primary" onclick="openModal('resume-modal')">预览在线简历</button>
-                <span style="color: var(--text-sub); font-size: 14px; font-family: var(--font-mono);">[ IELTS: 6.5 备考中 ]</span>
+                <button class="btn btn-primary" onclick="document.getElementById('experience').scrollIntoView();">查看实战档案 ↓</button>
+                <span style="color: var(--text-sub); font-size: 14px; font-family: var(--font-mono);">[ 雅思目标: 6.5 (备考中) ]</span>
             </div>
         </section>
 
+        <div class="edu-bar">
+            <div class="edu-info">
+                <span><strong>广东科技学院</strong></span>
+                <span>网络空间安全 | 本科</span>
+                <span>2023.09 - 2027.06</span>
+                <span style="color: var(--accent-green);">GPA: 3.05</span>
+            </div>
+            <div class="edu-courses">核心课程：网络安全编程、代码审计、信息安全数学、MySQL、密码学、Linux原理与应用</div>
+        </div>
+
         <section id="experience">
             <div class="exp-header">
-                <div class="section-title" style="margin-bottom: 0; border: none;">核心档案 // ARCHIVES</div>
+                <div class="section-title" style="margin-bottom: 0; border: none;">核心实战档案 // ARCHIVES</div>
                 <button class="btn" onclick="openModal('add-exp-modal')" style="font-size: 12px; padding: 6px 12px;">+ 录入新经历</button>
             </div>
             <div class="grid" id="exp-grid"></div>
@@ -143,11 +161,10 @@
         <section id="guestbook">
             <div class="section-title">加密通信信道 // TERMINAL GUESTBOOK</div>
             <div class="terminal">
-                <div class="terminal-output" id="msg-board">
-                    </div>
+                <div class="terminal-output" id="msg-board"></div>
                 <form class="terminal-input-group" id="msg-form">
                     <span>visitor@netsec:~$</span>
-                    <input type="text" id="msg-input" placeholder="输入你想对我说的话，按回车发送..." autocomplete="off" required>
+                    <input type="text" id="msg-input" placeholder="输入命令或留言，按回车发送..." autocomplete="off" required>
                 </form>
             </div>
         </section>
@@ -163,154 +180,130 @@
                     <input type="text" id="exp-title" required placeholder="例如：第十六届蓝桥杯 Python 组">
                 </div>
                 <div class="form-group">
-                    <label>技术标签</label>
-                    <input type="text" id="exp-tag" required placeholder="例如：算法 / 自动化">
+                    <label>发生时间</label>
+                    <input type="text" id="exp-time" required placeholder="例如：2025.10 - 至今">
                 </div>
                 <div class="form-group">
-                    <label>详细描述</label>
-                    <textarea id="exp-desc" rows="3" required placeholder="描述你的战绩或解题思路..."></textarea>
+                    <label>技术标签</label>
+                    <input type="text" id="exp-tag" required placeholder="例如：全栈开发 / 安全自查">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">保存至数据库</button>
+                <div class="form-group">
+                    <label>卡片简述 (外层展示)</label>
+                    <input type="text" id="exp-short" required placeholder="一句话概括你的核心成果...">
+                </div>
+                <div class="form-group">
+                    <label>详细内容 (点开后展示，支持换行)</label>
+                    <textarea id="exp-details" rows="5" required placeholder="详细描述你的解题思路、代码实现或漏洞复现过程..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">加密并写入数据库</button>
             </form>
         </div>
     </div>
 
-    <div class="modal-overlay" id="resume-modal">
+    <div class="modal-overlay" id="detail-modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('resume-modal')">×</button>
-            <h3 style="color: var(--text-main);">简历预览</h3>
-            <div class="resume-paper">
-                <h2 style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">李俊辉</h2>
-                <p><strong>意向岗位：</strong>网络安全实习生</p>
-                <p><strong>邮箱：</strong>16675970815@163.com</p>
-                <p><strong>教育背景：</strong>广东科技学院 | 网络空间安全 (GPA 3.05)</p>
-                <h3 style="margin-top: 20px;">核心能力</h3>
-                <ul>
-                    <li>精通 Burp Suite，具备独立搭建 Docker 靶场测试能力。</li>
-                    <li>具备 PHP 代码白盒审计与漏洞修复能力（精通 PDO 预编译防御 SQL 注入）。</li>
-                    <li>持有 NISP 二级证书、工信部信息安全证书。</li>
-                </ul>
-            </div>
+            <button class="close-btn" onclick="closeModal('detail-modal')">×</button>
+            <div class="detail-time" id="detail-time"></div>
+            <h2 class="detail-title" id="detail-title"></h2>
+            <div class="exp-tag" id="detail-tag" style="margin-bottom: 0;"></div>
+            <div class="detail-body" id="detail-body"></div>
         </div>
     </div>
 
     <script>
-        /* * [架构说明] 
-         * 为了让你在 Vercel 静态托管下立刻体验到“数据库”的效果，
-         * 这里采用了浏览器的 LocalStorage 作为 NoSQL 数据库进行 Mock (模拟)。
-         * 以后如果你接入了真后端（如 Supabase 或 Node.js），只需把这部分替换为 fetch() API。
-         */
-
-        // --- 1. 数据库初始化与读取 ---
-        
-        // 默认的经历数据（如果数据库是空的）
+        // --- 1. 深度融入的简历默认数据 (信息分层架构) ---
         const defaultExps = [
-            { id: 1, title: "PHP 新闻管理系统加固", tag: "Web安全 / PDO", desc: "采用 PDO 预编译替代传统拼接，防御 SQL 注入。在后端实现 Session 鉴权修复越权风险。" },
-            { id: 2, title: "Pikachu 靶场漏洞分析", tag: "XSS / 代码审计", desc: "复现 XSS 攻击链，从 $_POST 源码层面分析成因并输出修复方案。" },
-            { id: 3, title: "羊城杯 CTF 实战", tag: "流量分析", desc: "利用 Burp Suite 分析流量，成功识别并利用 SQL 注入漏洞。" }
+            { 
+                id: 1, 
+                time: "2025.11 - 2025.12",
+                title: "PHP 新闻管理系统开发与安全加固", 
+                tag: "全栈开发 / 漏洞修复", 
+                shortDesc: "独立使用PHP+MySQL开发系统，应用安全编码规范终结注入与越权风险。",
+                details: "【安全开发实践】独立使用 PHP+MySQL 开发动态新闻管理系统，实现了用户鉴权、内容发布与管理模块；在开发过程中主动应用安全编码规范。\n\n【防御逻辑实现】针对 SQL 注入风险，全站采用 PDO 预编译 (Prepared Statements) 技术替代传统拼接；针对 XSS 风险，对前端输出数据实施了严格的 HTML 实体转义处理。\n\n【白盒审计视角】从开发者视角审视业务逻辑，在后端实现了基于 Session 的身份验证机制，修复了潜在的越权访问 (IDOR) 风险，不仅“会挖洞”，更“懂修洞”。" 
+            },
+            { 
+                id: 2, 
+                time: "2025.12 - 至今",
+                title: "Web漏洞攻防演练与原理分析", 
+                tag: "靶场实战 / 独立研究", 
+                shortDesc: "基于 Pikachu 靶场，完整复现攻击链并输出底层代码级修复方案。",
+                details: "【漏洞挖掘】利用 Burp Suite 对弱口令接口进行字典爆破；深入研究 SQL 注入原理，手工构造联合查询与盲注 Payload，并辅以 Sqlmap 进行自动化数据提取。\n\n【漏洞复现与修复】完整复现存储型与反射型 XSS 攻击链，成功获取用户 Cookie；从 PHP 源码层面 (如 $_POST 拼接) 分析漏洞成因，输出包含预编译参数化查询、HTML 实体转义等修复方案的详细技术报告。" 
+            },
+            { 
+                id: 3, 
+                time: "2025",
+                title: "大型网络安全大赛与算法实战", 
+                tag: "CTF / 蓝桥杯", 
+                shortDesc: "参与湾区杯&羊城杯CTF解题，具备底层自动化安全测试脚本编写能力。",
+                details: "【湾区杯&羊城杯网络安全大赛(CTF)】针对 Web 赛题进行攻关，利用 Burp Suite 分析流量，识别并利用 SQL 注入与文件上传漏洞，赛后输出 Writeup 复盘。\n\n【第十六届蓝桥杯大赛(Python组)】通过高强度算法训练夯实 Python 基础，具备编写自动化安全测试脚本的底层代码能力。\n\n【其他经历】第十八届软件创新大赛、“复兴杯”技术成员 (2024-2025)。" 
+            }
         ];
 
-        // 默认的留言数据
-        const defaultMsgs = [
-            { time: "10:00:23", text: "系统初始化完成。等待外部连接..." },
-            { time: "10:05:12", text: "HR: 简历已阅，排版非常高级。" }
-        ];
+        let dbExperiences = JSON.parse(localStorage.getItem('faynzz_exps_v2')) || defaultExps;
+        let dbMessages = JSON.parse(localStorage.getItem('faynzz_msgs_v2')) || [{ time: "00:00:00", text: "系统已挂载，等待指令。" }];
 
-        // 从“数据库”获取数据
-        let dbExperiences = JSON.parse(localStorage.getItem('faynzz_exps')) || defaultExps;
-        let dbMessages = JSON.parse(localStorage.getItem('faynzz_msgs')) || defaultMsgs;
-
-        // --- 2. 页面渲染逻辑 (Render) ---
-
-        // 渲染经历卡片
+        // --- 2. 渲染外层卡片 ---
         function renderExperiences() {
             const grid = document.getElementById('exp-grid');
             grid.innerHTML = dbExperiences.map(exp => `
-                <div class="glass-card">
+                <div class="glass-card" onclick="openDetail(${exp.id})">
+                    <span class="exp-time">${exp.time}</span>
+                    <h3 style="margin-bottom: 8px; font-size: 18px;">${exp.title}</h3>
                     <div class="exp-tag">${exp.tag}</div>
-                    <h3 style="margin-bottom: 10px; font-size: 18px;">${exp.title}</h3>
-                    <p style="color: var(--text-sub); font-size: 14px;">${exp.desc}</p>
+                    <p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p>
                 </div>
             `).join('');
         }
 
-        // 渲染留言板
+        // --- 3. 打开内层详情逻辑 ---
+        function openDetail(id) {
+            const exp = dbExperiences.find(e => e.id === id);
+            if(exp) {
+                document.getElementById('detail-time').innerText = exp.time;
+                document.getElementById('detail-title').innerText = exp.title;
+                document.getElementById('detail-tag').innerText = exp.tag;
+                document.getElementById('detail-body').innerText = exp.details; // 自动保留换行
+                openModal('detail-modal');
+            }
+        }
+
         function renderMessages() {
             const board = document.getElementById('msg-board');
-            board.innerHTML = dbMessages.map(msg => `
-                <div class="msg-line">
-                    <span class="msg-time">[${msg.time}]</span>
-                    <span class="msg-text">${msg.text}</span>
-                </div>
-            `).join('');
-            // 自动滚动到底部
+            board.innerHTML = dbMessages.map(msg => `<div><span style="color:#555;">[${msg.time}]</span> ${msg.text}</div>`).join('');
             board.scrollTop = board.scrollHeight;
         }
 
-        // 页面加载时执行渲染
-        window.onload = () => {
-            renderExperiences();
-            renderMessages();
-        };
+        window.onload = () => { renderExperiences(); renderMessages(); };
 
-        // --- 3. 核心交互事件 (CRUD 的增) ---
-
-        // 提交新经历 (表单接管)
+        // --- 4. 表单提交接管 ---
         document.getElementById('exp-form').addEventListener('submit', function(e) {
-            e.preventDefault(); // 阻止网页默认刷新
-            
-            // 构建新数据对象
+            e.preventDefault();
             const newExp = {
                 id: Date.now(),
+                time: document.getElementById('exp-time').value,
                 title: document.getElementById('exp-title').value,
                 tag: document.getElementById('exp-tag').value,
-                desc: document.getElementById('exp-desc').value
+                shortDesc: document.getElementById('exp-short').value,
+                details: document.getElementById('exp-details').value
             };
-
-            // 存入“数据库”并持久化
-            dbExperiences.unshift(newExp); // 插入到最前面
-            localStorage.setItem('faynzz_exps', JSON.stringify(dbExperiences));
-            
-            // 重新渲染页面并关闭弹窗
-            renderExperiences();
-            this.reset(); // 清空表单
-            closeModal('add-exp-modal');
+            dbExperiences.unshift(newExp); 
+            localStorage.setItem('faynzz_exps_v2', JSON.stringify(dbExperiences));
+            renderExperiences(); this.reset(); closeModal('add-exp-modal');
         });
 
-        // 提交新留言 (终端输入)
         document.getElementById('msg-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('msg-input');
-            const text = input.value.trim();
-            if(!text) return;
-
-            // 获取当前时间
-            const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-            // 存入“数据库”
-            dbMessages.push({ time: timeStr, text: `Guest: ${text}` });
-            localStorage.setItem('faynzz_msgs', JSON.stringify(dbMessages));
-
-            // 更新界面
-            renderMessages();
-            input.value = ''; // 清空输入框
+            if(!input.value.trim()) return;
+            const timeStr = new Date().toLocaleTimeString('en-GB');
+            dbMessages.push({ time: timeStr, text: `Guest: ${input.value}` });
+            localStorage.setItem('faynzz_msgs_v2', JSON.stringify(dbMessages));
+            renderMessages(); input.value = '';
         });
 
-        // --- 4. 模态框控制逻辑 ---
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-        
-        // 点击背景区域关闭弹窗
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.classList.remove('active');
-            }
-        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        window.onclick = function(e) { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); }
     </script>
 </body>
 </html>
