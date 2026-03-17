@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李俊辉 | 网络与空间安全档案</title>
+    <title>李俊辉 | 网络安全与空间档案</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 核心变量：荧光绿 + 小众高级暗黑 --- */
+        /* --- 核心变量：白银河 + 小众高级暗黑 --- */
         :root {
-            --bg-deep: #050507;          /* 极深邃的底色 */
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-deep: #050507;          /* 极深邃的底色，模拟太空 */
+            --glass-bg: rgba(255, 255, 255, 0.01); /* 极其透明的玻璃 */
+            --glass-border: rgba(255, 255, 255, 0.05);
             --text-main: #f0f0f2;
             --text-sub: #8a8a93;
-            --accent-green: #00ff66;     /* 荧光绿 */
+            --accent-white: #ffffff;     /* 纯白银河 */
+            --accent-green: #00ff66;     /* 终端荧光绿点缀 */
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
             --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
         }
 
         /* --- 基础设置 --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; } /* 隐藏原生鼠标 */
         html { scroll-behavior: smooth; }
         body {
             background-color: var(--bg-deep);
@@ -32,68 +33,72 @@
 
         /* --- Three.js 背景层 --- */
         #bg-canvas {
-            position: fixed; top: 0; left: 0; z-index: -1; /* 绝对定位，处于最底层 */
+            position: fixed; top: 0; left: 0; z-index: -1;
             width: 100%; height: 100%;
         }
 
-        /* --- Apple 式导航栏 --- */
+        /* --- 自定义“星子”光标 --- */
+        #custom-cursor {
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            mix-blend-mode: difference; /* 增加对比度 */
+            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s;
+            box-shadow: 0 0 10px #fff;
+        }
+
+        /* --- Apple 式导航栏 (极简) --- */
         nav {
             position: fixed; top: 0; width: 100%; height: 60px;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border); z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.03); z-index: 100;
             display: flex; justify-content: center; align-items: center; gap: 30px;
         }
         nav a { color: var(--text-sub); text-decoration: none; font-size: 13px; transition: var(--transition); }
-        nav a:hover, nav a.active { color: var(--text-main); }
+        nav a:hover, nav a.active { color: var(--text-main); text-shadow: 0 0 5px #fff; }
 
         /* --- 基础布局 --- */
         .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px 40px; }
         section { margin-bottom: 80px; }
-        .section-title { font-size: 14px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+        .section-title { font-size: 13px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; font-family: var(--font-mono); }
         
-        /* 磨砂玻璃卡片 (Glassmorphism) */
+        /* 极致通透的磨砂玻璃 (Glassmorphism) */
         .glass-card {
-            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; transition: var(--transition);
+            background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-radius: 12px; padding: 24px; transition: var(--transition);
         }
-        .glass-card:hover { border-color: rgba(0, 255, 102, 0.3); }
+        .glass-card:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
 
-        /* --- 1. Hero Section (Apple 视差质感) --- */
-        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
-        .hero h1 { font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 16px; }
-        .hero p { color: var(--text-sub); font-size: 16px; max-width: 700px; margin-bottom: 30px; }
+        /* --- 1. Hero Section (Apple 极致留白) --- */
+        .hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .hero h1 { font-size: clamp(32px, 6vw, 72px); font-weight: 800; letter-spacing: -3px; line-height: 0.9; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .hero h1 span { color: var(--text-sub); }
+        .hero p { color: var(--text-sub); font-size: 17px; max-width: 650px; margin-bottom: 40px; font-weight: 300; }
         .btn-primary {
-            background: var(--accent-green); color: #000; border: none; font-weight: 600;
-            padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: var(--transition);
+            background: transparent; color: var(--accent-white); border: 1px solid rgba(255,255,255,0.2); font-weight: 400;
+            padding: 12px 28px; border-radius: 100px; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: var(--font-sys);
         }
-        .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); background: #33ff85; }
+        .btn-primary:hover { background: var(--accent-white); color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-        /* --- 自我评价特区 --- */
-        .self-eval-block {
-            background: rgba(0, 255, 102, 0.05); border-left: 3px solid var(--accent-green);
-            padding: 15px 20px; font-size: 14px; color: #ccc; margin-bottom: 40px; border-radius: 0 8px 8px 0; max-width: 800px;
-        }
+        /* --- 自我评价与教育特区 (信息分层) --- */
+        .info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 60px; }
+        .self-eval-block { font-size: 14px; color: #ccc; line-height: 1.8; font-weight: 300; border-right: 1px solid var(--glass-border); padding-right: 30px; }
+        .edu-block { font-size: 13px; color: var(--text-sub); }
+        .edu-courses { font-family: var(--font-mono); font-size: 11px; margin-top: 10px; }
 
-        /* --- 教育经历特区 --- */
-        .edu-bar { display: flex; justify-content: space-between; align-items: center; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 15px 20px; border-radius: 12px; margin-bottom: 40px; flex-wrap: wrap; gap: 10px; }
-        .edu-info { display: flex; gap: 20px; font-size: 14px; color: var(--text-main); }
-        .edu-courses { font-size: 12px; color: var(--text-sub); width: 100%; margin-top: 5px; }
-
-        /* --- 2. 实战档案区 --- */
-        .exp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        /* --- 2. 实战档案区 (Bento 布局) --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .bento-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 16px; padding: 24px; transition: var(--transition);
+            background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 24px; transition: var(--transition); cursor: pointer; position: relative;
         }
-        .bento-card:hover { border-color: rgba(0, 255, 102, 0.3); transform: translateY(-3px); }
-        .bento-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); margin-bottom: 8px; display: block; }
-        .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: var(--accent-green); background: rgba(0, 255, 102, 0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; }
+        .bento-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-3px); }
+        .bento-time { font-family: var(--font-mono); font-size: 11px; color: #555; margin-bottom: 8px; display: block; }
+        .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: #fff; background: rgba(255, 255, 255, 0.05); padding: 3px 7px; border-radius: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* --- 3. 终端留言板 (功能完备) --- */
-        .terminal { background: #000; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
-        .terminal-output { height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #333; padding-top: 15px; }
+        /* --- 3. 终端留言板 (功能完备，Neon绿点缀) --- */
+        .terminal { background: #000; border: 1px solid #121212; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
+        .terminal-output { height: 220px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #222; padding-top: 15px; }
         .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
         .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
     </style>
@@ -101,6 +106,8 @@
 <body>
 
     <canvas id="bg-canvas"></canvas>
+
+    <div id="custom-cursor"></div>
 
     <nav>
         <a href="#hero">档案首页</a>
@@ -112,40 +119,33 @@
         <section class="hero" id="hero">
             <h1>李俊辉<span>.</span>NetSec</h1>
             <p><strong>意向岗位：</strong>网络安全实习生</p>
-            <p style="margin-bottom: 20px;">以网络安全的矛，铸造交互式 Web 的盾。</p>
+            <p style="margin-bottom: 25px;">潜行于 0 与 1 的深邃银河，以安全之矛，铸造Web防御之盾。</p>
             
-            <div class="self-eval-block">
-                “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”
+            <div class="info-grid">
+                <div class="self-eval-block">
+                    “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”
+                </div>
+                <div class="edu-block">
+                    <span><strong>广东科技学院</strong></span><br>
+                    <span>网络空间安全 | 本科</span><br>
+                    <span>2023.09 - 2027.06</span><br>
+                    <span style="color: #fff; font-weight: 600;">GPA: 3.05</span>
+                    <div class="edu-courses">核心课程：网络安全编程、代码审计、Linux原理与应用、密码学</div>
+                </div>
             </div>
 
             <div style="display: flex; gap: 15px; align-items: center;">
-                <button class="btn-primary" onclick="document.getElementById('experience').scrollIntoView();">查看实战档案 ↓</button>
-                <span style="color: var(--text-sub); font-size: 14px; font-family: var(--font-mono);">[ 雅思目标: 6.5 (备考中) ]</span>
+                <button class="btn-primary" onclick="document.getElementById('experience').scrollIntoView();">探索实战序列 ↓</button>
+                <span style="color: var(--text-sub); font-size: 13px; font-family: var(--font-mono);">[ IELTS: 6.5 (目标备考中) ]</span>
             </div>
         </section>
-
-        <div class="edu-bar">
-            <div class="edu-info">
-                <span><strong>广东科技学院</strong></span>
-                <span>网络空间安全 | 本科</span>
-                <span>2023.09 - 2027.06</span>
-                <span style="color: var(--accent-green);">GPA: 3.05</span>
-            </div>
-            <div class="edu-courses">核心课程：网络安全编程、代码审计、MySQL、Linux原理与应用、密码学</div>
-        </div>
 
         <section id="experience">
             <div class="exp-header">
                 <div class="section-title" style="margin-bottom: 0; border: none;">核心实战档案 // ARCHIVES</div>
             </div>
             <div class="grid" id="exp-grid">
-                <div class="bento-card">
-                    <span class="bento-time">2025.11 - 2025.12</span>
-                    <h3 style="margin-bottom: 8px; font-size: 18px;">PHP新闻系统安全加固</h3>
-                    <div class="bento-tag">全栈开发 / 修复IDOR</div>
-                    <p style="color: var(--text-sub); font-size: 13px;">独立开发新闻系统，应用安全规范终结注入与越权风险。</p>
                 </div>
-            </div>
         </section>
 
         <section id="guestbook">
@@ -154,7 +154,7 @@
                 <div class="terminal-output" id="msg-board"></div>
                 <form class="terminal-input-group" id="msg-form">
                     <span>visitor@netsec:~$</span>
-                    <input type="text" id="msg-input" placeholder="输入命令或留言，按回车发送..." autocomplete="off" required>
+                    <input type="text" id="msg-input" placeholder="输入指令或留言，按回车发送..." autocomplete="off" required>
                 </form>
             </div>
         </section>
@@ -163,9 +163,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
-        /* * [架构说明] 1. Three.js 动态背景逻辑 (核心战术武器)
-         * 为了做到极致的流畅和感官体验，这里创建了一个 3D 粒子平面网格，
-         * 并通过着色器 (Shader) 级别的数学公式实现随鼠标移动的波纹效果。
+        /* * [架构说明] 1. Three.js 写实银河星空背景逻辑 (核心战术武器)
+         * 为了做到震撼的眼球效应，这里创建了一个包含海量随机粒子的庞大星空场景。
+         * 通过模拟恒星的亮度差异和缓慢的自转，营造出一种置身于真实银河之中的深邃感。
          */
 
         const canvas = document.getElementById('bg-canvas');
@@ -174,31 +174,53 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 250; // 调整相机距离，控制粒子平面的可视范围
+        // 使用更广角的相机，增加空间感
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+        camera.position.z = 500; // 相机处于星空之中
 
-        // 核心参数：粒子颜色和尺寸
-        const color_neon = 0x00ff66; // 荧光绿
-        const gap = 30; // 粒子间距
-        const res_x = 70; // X 轴粒子数量
-        const res_y = 70; // Y 轴粒子数量
-        const total = res_x * res_y;
+        // --- 核心：海量随机星群生成 ---
+        const total_stars = 15000; // 星子总数，增加数量以营造宏大感
+        const positions = new Float32Array(total_stars * 3);
+        const colors = new Float32Array(total_stars * 3); // 存储每个星子的颜色
 
-        // 构建粒子网格
-        const positions = new Float32Array(total * 3); // 存储每个粒子的 X, Y, Z 坐标
-        for (let i = 0; i < total; i++) {
-            positions[i * 3] = (i % res_x) * gap - (res_x * gap / 2); // X 轴居中
-            positions[i * 3 + 1] = Math.floor(i / res_y) * gap - (res_y * gap / 2); // Y 轴居中
-            positions[i * 3 + 2] = 0; // Z 轴初始为 0
+        for (let i = 0; i < total_stars; i++) {
+            // 在极大的立体空间内随机分布星子 (X, Y, Z 均在 -1000 到 1000 之间)
+            positions[i * 3] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+
+            /* * [网安人设点缀] 模拟真实的恒星亮度差异。
+             * 大部分星子呈纯白 (#fff)，小部分呈微黄或微蓝，增加层次感。
+             */
+            const brightness = 0.8 + Math.random() * 0.2; // 0.8 到 1.0 的基础亮度
+            if (Math.random() > 0.9) {
+                // 10% 的星子带有微妙的蓝色调 (代表高温新星)
+                colors[i * 3] = brightness * 0.9;
+                colors[i * 3 + 1] = brightness * 0.9;
+                colors[i * 3 + 2] = brightness;
+            } else {
+                // 90% 为纯白星子
+                colors[i * 3] = brightness;
+                colors[i * 3 + 1] = brightness;
+                colors[i * 3 + 2] = brightness;
+            }
         }
 
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-        // 材质：使用 PointMaterial，让粒子看起来像是一个个发光的小点
-        const material = new THREE.PointsMaterial({ color: color_neon, size: 3, sizeAttenuation: true, transparent: true, opacity: 0.6 });
-        const points = new THREE.Points(geometry, material);
-        scene.add(points);
+        // 材质：使用 PointMaterial，通过 vertexColors 属性启用星子的个体颜色
+        const material = new THREE.PointsMaterial({ 
+            size: 2, // 星子尺寸，保持小巧以模拟远景恒星
+            sizeAttenuation: true, // 开启尺寸随距离衰减，增加立体感
+            transparent: true, 
+            opacity: 0.8, 
+            vertexColors: true, // 启用顶点颜色
+            blending: THREE.AdditiveBlending // 开启叠加混合，让星子看起来在发光
+        });
+        const stars = new THREE.Points(geometry, material);
+        scene.add(stars);
 
         // --- 鼠标交互与动态逻辑 ---
         let mouse_x = 0, mouse_y = 0;
@@ -206,34 +228,28 @@
             // 获取鼠标在屏幕上的标准化坐标 (-1 到 1)
             mouse_x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse_y = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            // 同时更新自定义光标位置
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
         });
 
-        const originalPositions = positions.slice(); // 保存初始位置
+        // 自定义光标逻辑
+        const cursor = document.getElementById('custom-cursor');
+
         let clock = 0;
         function animate() {
             requestAnimationFrame(animate);
-            clock += 0.05; // 基础时间递增
+            clock += 0.001; // 极慢的时间递增，模拟银河缓慢自转
 
-            const currentPositions = geometry.attributes.position.array;
-            for (let i = 0; i < total; i++) {
-                const x = originalPositions[i * 3];
-                const y = originalPositions[i * 3 + 1];
-
-                // --- 核心数学逻辑：随鼠标移动产生的波纹 ---
-                // 计算每个粒子距离鼠标位置的归一化偏移量
-                const dist_x = x - (mouse_x * 200); 
-                const dist_y = y - (mouse_y * 100);
-                const distance = Math.sqrt(dist_x * dist_x + dist_y * dist_y); // 计算距离
-
-                // 应用正弦函数生成动态波形
-                // 参数控制：100 控制波纹的宽度，50 控制波纹的高度，clock 控制波纹随时间推移
-                const z_offset = Math.sin((distance / 100) - clock) * 50;
-                
-                // 仅对距离鼠标较近的粒子应用波纹效果，形成“随鼠标产生”的感觉
-                const factor = Math.max(0, 1 - (distance / 400));
-                currentPositions[i * 3 + 2] = z_offset * factor; 
-            }
-            geometry.attributes.position.needsUpdate = true; // 告诉 Three.js 粒子坐标已更新
+            // --- 核心战术：银河缓慢自转 & 随鼠标轻微摆动 ---
+            stars.rotation.y = clock; // 银河围绕 Y 轴缓慢自转
+            
+            // 随鼠标移动轻微调整星群的整体倾斜度，增加交互感
+            const target_rot_x = mouse_y * 0.05;
+            const target_rot_z = mouse_x * 0.05;
+            stars.rotation.x += (target_rot_x - stars.rotation.x) * 0.05; // 平滑过渡
+            stars.rotation.z += (target_rot_z - stars.rotation.z) * 0.05;
 
             renderer.render(scene, camera);
         }
@@ -246,16 +262,16 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        /* [架构说明] 2. 简易简历数据库 (维持原功能) */
+        /* [架构说明] 2. 简历数据与终端逻辑 (维持原功能) */
         const defaultExps = [
-            { id: 1, time: "2025.11 - 2025.12", title: "PHP新闻系统开发与安全加固", tag: "全栈开发 / 漏洞修复", shortDesc: "独立使用PHP+MySQL开发系统，应用安全编码规范终结注入与越权风险。" },
-            { id: 2, time: "2025.12 - 至今", title: "Web漏洞攻防演练与原理分析", tag: "靶场实战 / 独立研究", shortDesc: "基于 Pikachu 靶场，完整复现攻击链并输出底层代码级修复方案。" },
-            { id: 3, time: "2025", title: "湾区杯&羊城杯CTF实战", tag: "竞赛经历", shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，复盘输出技术Writeup。" }
+            { id: 1, time: "2025.11 - 2025.12", title: "PHP新闻系统开发与安全加固", tag: "全栈开发 / 代码审计", shortDesc: "独立开发新闻系统，全站应用 PDO 预编译，终结 SQL 注入与 IDOR 越权风险。" },
+            { id: 2, time: "2025.12 - 至今", title: "Web漏洞攻防演练与原理分析", tag: "靶场实战 / BurpSuite", shortDesc: "基于 Pikachu 靶场，完整复现攻击链，从底层代码级输出 OWASP Top 10 修复方案。" },
+            { id: 3, time: "2025", title: "湾区杯&羊城杯CTF实战", tag: "竞赛经历 / Writeup", shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，赛后复盘输出技术Writeup。" }
         ];
         const grid = document.getElementById('exp-grid');
-        grid.innerHTML = defaultExps.map(exp => `<div class="bento-card"><span class="bento-time">${exp.time}</span><h3 style="margin-bottom: 8px; font-size: 18px;">${exp.title}</h3><div class="bento-tag">${exp.tag}</div><p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p></div>`).join('');
+        grid.innerHTML = defaultExps.map(exp => `<div class="bento-card"><span class="bento-time">${exp.time}</span><h3 style="margin-bottom: 8px; font-size: 17px;">${exp.title}</h3><div class="bento-tag">${exp.tag}</div><p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p></div>`).join('');
         const board = document.getElementById('msg-board');
-        board.innerHTML = [{ time: "00:00:00", text: "系统已挂载，等待指令。" }].map(msg => `<div><span style="color:#555;">[${msg.time}]</span> ${msg.text}</div>`).join('');
+        board.innerHTML = [{ time: "00:00:00", text: "系统已挂载，潜行模式启动。" }].map(msg => `<div><span style="color:#444;">[${msg.time}]</span> ${msg.text}</div>`).join('');
     </script>
 </body>
 </html>
