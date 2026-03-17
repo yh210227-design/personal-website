@@ -3,285 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李俊辉 | 交互式数字档案</title>
+    <title>李俊辉 | 网络安全与空间档案</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
+        /* --- 核心变量 --- */
         :root {
-            --bg-deep: #020205; 
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-deep: #050507;
+            --glass-bg: rgba(255, 255, 255, 0.01);
+            --glass-border: rgba(255, 255, 255, 0.05);
             --text-main: #f0f0f2;
             --text-sub: #8a8a93;
             --accent-white: #ffffff;
             --accent-green: #00ff66;
-            --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- 基础设置 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         html { scroll-behavior: smooth; }
         body {
-            background-color: var(--bg-deep); color: var(--text-main);
-            font-family: var(--font-sys); overflow-x: hidden;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sys);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 背景 Canvas --- */
+        /* --- Three.js 背景层 --- */
         #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
 
-        /* --- 极简导航 --- */
+        /* --- 自定义“星子”光标 --- */
+        #custom-cursor {
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            mix-blend-mode: difference; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s; box-shadow: 0 0 10px #fff;
+        }
+
+        /* --- 导航栏 --- */
         nav {
             position: fixed; top: 0; width: 100%; height: 60px;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border); z-index: 100;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.03); z-index: 100;
             display: flex; justify-content: center; align-items: center; gap: 30px;
         }
         nav a { color: var(--text-sub); text-decoration: none; font-size: 13px; transition: var(--transition); }
-        nav a:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+        nav a:hover { color: var(--text-main); text-shadow: 0 0 5px #fff; }
 
+        /* --- 布局 --- */
         .container { max-width: 1000px; margin: 0 auto; padding: 120px 20px 40px; }
-        section { margin-bottom: 100px; }
-
-        /* --- Hero Section --- */
-        .hero h1 { font-size: clamp(40px, 8vw, 80px); font-weight: 800; letter-spacing: -3px; line-height: 1; margin-bottom: 20px; }
-        .hero p { color: var(--text-sub); font-size: 18px; max-width: 600px; margin-bottom: 30px; }
+        section { margin-bottom: 80px; }
+        .section-title { font-size: 13px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; font-family: var(--font-mono); }
         
-        .self-eval {
-            background: rgba(255,255,255,0.03); border-left: 2px solid #fff;
-            padding: 20px; font-size: 14px; color: #ccc; margin-bottom: 40px; line-height: 1.8;
+        /* --- Hero --- */
+        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
+        .hero h1 { font-size: clamp(32px, 6vw, 72px); font-weight: 800; letter-spacing: -3px; line-height: 0.9; margin-bottom: 20px; }
+        .hero p { color: var(--text-sub); font-size: 17px; max-width: 650px; margin-bottom: 40px; font-weight: 300; }
+        .btn-primary {
+            background: transparent; color: var(--accent-white); border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 28px; border-radius: 100px; font-size: 14px; cursor: pointer; transition: var(--transition);
         }
+        .btn-primary:hover { background: var(--accent-white); color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-        /* --- 教育经历条 --- */
-        .edu-bar {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            padding: 20px; border-radius: 12px; margin-bottom: 50px;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .edu-main { display: flex; justify-content: space-between; font-weight: 600; }
-        .edu-courses { font-size: 12px; color: var(--text-sub); font-family: var(--font-mono); }
+        .info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 60px; }
+        .self-eval-block { font-size: 14px; color: #ccc; line-height: 1.8; border-right: 1px solid var(--glass-border); padding-right: 30px; }
+        .edu-block { font-size: 13px; color: var(--text-sub); }
 
-        /* --- 项目卡片网格 --- */
-        .section-title { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        /* --- Card Grid --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .bento-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            padding: 25px; border-radius: 16px; transition: var(--transition); cursor: pointer;
+            background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 24px; transition: var(--transition);
         }
-        .bento-card:hover { border-color: #fff; transform: translateY(-5px); background: rgba(255,255,255,0.05); }
-        .card-time { font-family: var(--font-mono); font-size: 11px; color: #555; margin-bottom: 10px; display: block; }
-        .card-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border: 1px solid #333; border-radius: 4px; margin-bottom: 15px; }
+        .bento-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-3px); }
+        .bento-time { font-family: var(--font-mono); font-size: 11px; color: #555; margin-bottom: 8px; display: block; }
+        .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: #fff; background: rgba(255, 255, 255, 0.05); padding: 3px 7px; border-radius: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* --- 终端留言板 --- */
-        .terminal { background: #000; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; font-family: var(--font-mono); }
-        .terminal-header { color: #444; font-size: 12px; margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 10px; }
-        .terminal-output { height: 200px; overflow-y: auto; font-size: 13px; color: #888; margin-bottom: 15px; }
-        .terminal-input-wrap { display: flex; align-items: center; color: var(--accent-green); }
-        .terminal-input-wrap input {
-            background: transparent; border: none; color: #fff; font-family: var(--font-mono);
-            outline: none; flex: 1; margin-left: 10px; font-size: 13px;
-        }
-
-        /* --- 详情弹窗 (Modal) --- */
-        .modal-overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            z-index: 1000; display: none; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: #050505; border: 1px solid var(--glass-border);
-            width: 90%; max-width: 600px; padding: 40px; border-radius: 20px; position: relative;
-        }
-        .close-btn { position: absolute; top: 20px; right: 20px; color: #555; cursor: pointer; font-size: 24px; }
-        .detail-body { line-height: 1.8; color: #ccc; white-space: pre-wrap; margin-top: 20px; }
-
-        /* 录入表单容器 */
-        .form-group { margin-bottom: 15px; }
-        .form-group input, .form-group textarea {
-            width: 100%; background: #111; border: 1px solid #222; color: #fff; padding: 10px; border-radius: 4px;
-        }
+        /* --- Terminal --- */
+        .terminal { background: #000; border: 1px solid #121212; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
+        .terminal-output { height: 220px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #222; padding-top: 15px; }
+        .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
+        .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
     </style>
 </head>
 <body>
 
     <canvas id="bg-canvas"></canvas>
+    <div id="custom-cursor"></div>
 
     <nav>
-        <a href="#hero">ARCHIVE</a>
-        <a href="#experience">PROJECTS</a>
-        <a href="#guestbook">TERMINAL</a>
+        <a href="#hero">档案首页</a>
+        <a href="#experience">实战与研究</a>
+        <a href="#guestbook">终端通信</a>
     </nav>
 
     <div class="container">
         <section class="hero" id="hero">
-            <h1>李俊辉<span>.</span></h1>
-            <p>网络空间安全 | Web 安全攻防实习生</p>
-            <div class="self-eval" id="self-eval-text">
-                </div>
+            <h1>李俊辉<span>.</span>NetSec</h1>
+            <p><strong>意向岗位：</strong>网络安全实习生</p>
+            <p style="margin-bottom: 25px;">潜行于 0 与 1 的深邃银河，以安全之矛，铸造Web防御之盾。</p>
             
-            <div class="edu-bar">
-                <div class="edu-main">
-                    <span>广东科技学院 (GKC)</span>
-                    <span>2023.09 - 2027.06</span>
+            <div class="info-grid">
+                <div class="self-eval-block">
+                    “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”
                 </div>
-                <div style="font-size: 14px;">网络空间安全 · 本科 · GPA 3.05</div>
-                <div class="edu-courses">核心课程：网络安全编程、代码审计、Linux原理与应用、MySQL、密码学</div>
+                <div class="edu-block">
+                    <span><strong>广东科技学院</strong></span><br>
+                    <span>网络空间安全 | 本科</span><br>
+                    <span>2023.09 - 2027.06</span><br>
+                    <span style="color: #fff; font-weight: 600;">GPA: 3.05</span>
+                    <div style="font-family: var(--font-mono); font-size: 11px; margin-top: 10px;">核心课程：网络安全编程、代码审计、密码学</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button class="btn-primary" onclick="document.getElementById('experience').scrollIntoView();">探索实战序列 ↓</button>
+                <span style="color: var(--text-sub); font-size: 13px; font-family: var(--font-mono);">[ IELTS: 6.5 (目标备考中) ]</span>
             </div>
         </section>
 
         <section id="experience">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="section-title">实战档案 // SELECTED PROJECTS</div>
-                <button onclick="openModal('add-modal')" style="background:none; border:1px solid #333; color:#555; padding:4px 12px; border-radius:4px; font-size:10px; cursor:pointer;">+ 录入新经历</button>
-            </div>
+            <div class="section-title">核心实战档案 // ARCHIVES</div>
             <div class="grid" id="exp-grid"></div>
         </section>
 
         <section id="guestbook">
-            <div class="section-title">加密通信终端 // ENCRYPTED TERMINAL</div>
+            <div class="section-title">加密通信信道 // TERMINAL GUESTBOOK</div>
             <div class="terminal">
-                <div class="terminal-header">SYSTEM READY - AUTHORIZED ACCESS ONLY</div>
-                <div class="terminal-output" id="term-out"></div>
-                <form class="terminal-input-wrap" id="term-form">
-                    <span>visitor@ljh_arch:~$</span>
-                    <input type="text" id="term-in" autocomplete="off" placeholder="输入指令...">
+                <div class="terminal-output" id="msg-board"></div>
+                <form class="terminal-input-group" id="msg-form">
+                    <span>visitor@netsec:~$</span>
+                    <input type="text" id="msg-input" placeholder="输入指令或留言，按回车发送..." autocomplete="off" required>
                 </form>
             </div>
         </section>
     </div>
 
-    <div class="modal-overlay" id="detail-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('detail-modal')">×</span>
-            <div id="modal-time" style="font-family: var(--font-mono); font-size: 12px; color: #555;"></div>
-            <h2 id="modal-title" style="margin: 10px 0;"></h2>
-            <div id="modal-tag" class="card-tag"></div>
-            <div class="detail-body" id="modal-body"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="add-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('add-modal')">×</span>
-            <h3>录入新档案</h3>
-            <form id="add-form" style="margin-top:20px;">
-                <div class="form-group"><input type="text" id="in-title" placeholder="项目名称" required></div>
-                <div class="form-group"><input type="text" id="in-time" placeholder="时间 (如 2026.03)" required></div>
-                <div class="form-group"><input type="text" id="in-tag" placeholder="标签 (如 CTF / 安全开发)" required></div>
-                <div class="form-group"><textarea id="in-body" rows="5" placeholder="详细内容..." required></textarea></div>
-                <button type="submit" style="width:100%; padding:10px; background:#fff; border:none; cursor:pointer;">存入档案库</button>
-            </form>
-        </div>
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script>
-        // --- 1. 银河背景逻辑 ---
+        /* --- 1. Three.js 写实银河背景 --- */
         const canvas = document.getElementById('bg-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
         camera.position.z = 500;
 
-        const starCount = 12000;
-        const pos = new Float32Array(starCount * 3);
-        for(let i=0; i<starCount*3; i++) pos[i] = (Math.random()-0.5)*2000;
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const mat = new THREE.PointsMaterial({ size: 1.5, color: 0xffffff, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
-        const stars = new THREE.Points(geo, mat);
+        const total_stars = 15000;
+        const positions = new Float32Array(total_stars * 3);
+        const colors = new Float32Array(total_stars * 3);
+
+        for (let i = 0; i < total_stars; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+            const brightness = 0.8 + Math.random() * 0.2;
+            colors[i * 3] = brightness;
+            colors[i * 3 + 1] = brightness;
+            colors[i * 3 + 2] = brightness;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({ 
+            size: 2, sizeAttenuation: true, transparent: true, opacity: 0.8, vertexColors: true, blending: THREE.AdditiveBlending 
+        });
+        const stars = new THREE.Points(geometry, material);
         scene.add(stars);
+
+        /* --- 2. 鼠标交互与自定义光标 --- */
+        const cursor = document.getElementById('custom-cursor');
+        let mouse_x = 0, mouse_y = 0;
+
+        window.addEventListener('mousemove', e => {
+            mouse_x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse_y = -(e.clientY / window.innerHeight) * 2 + 1;
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
         function animate() {
             requestAnimationFrame(animate);
-            stars.rotation.y += 0.0003; // 极慢自转
-            stars.rotation.x += 0.0001;
+            stars.rotation.y += 0.0008; // 银河自转
+            stars.rotation.x += (mouse_y * 0.05 - stars.rotation.x) * 0.05;
+            stars.rotation.z += (mouse_x * 0.05 - stars.rotation.z) * 0.05;
             renderer.render(scene, camera);
         }
         animate();
 
-        // --- 2. 简历数据逻辑 ---
-        const selfEval = "“具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”";
-        document.getElementById('self-eval-text').innerText = selfEval;
-
-        const initialExps = [
-            { id: 1, title: "PHP 新闻管理系统开发与加固", time: "2025.11 - 2025.12", tag: "安全开发", body: "【安全开发实践】独立使用 PHP+MySQL 开发动态新闻管理系统，实现了用户鉴权、内容发布与管理模块。\n【防御逻辑实现】针对 SQL 注入风险，全站采用 PDO 预编译技术；针对 XSS 风险，对前端输出数据实施了严格的 HTML 实体转义处理。" },
-            { id: 2, title: "Web 漏洞攻防演练与原理分析", time: "2025.12 - 至今", tag: "漏洞挖掘", body: "【漏洞挖掘】利用 Burp Suite 对弱口令接口进行字典爆破；深入研究 SQL 注入原理，手工构造联合查询与盲注 Payload。\n【复现修复】完整复现存储型与反射型 XSS 攻击链，从 PHP 源码层面分析漏洞成因。" },
-            { id: 3, title: "蓝桥杯/CTF 竞赛序列", time: "2025 - 2026", tag: "竞赛实战", body: "【CTF 实战】参与湾区杯&羊城杯，利用 Burp Suite 分析流量，识别并利用漏洞。\n【算法训练】第十六届蓝桥杯 Python 组高强度训练，具备编写自动化安全测试脚本的底层代码能力。" }
-        ];
-
-        function renderExps() {
-            const grid = document.getElementById('exp-grid');
-            grid.innerHTML = initialExps.map(exp => `
-                <div class="bento-card" onclick="showDetail(${exp.id})">
-                    <span class="card-time">${exp.time}</span>
-                    <h3 style="font-size:16px; margin-bottom:10px;">${exp.title}</h3>
-                    <div class="card-tag">${exp.tag}</div>
-                    <p style="font-size:12px; color:var(--text-sub);">点击查看技术卷宗...</p>
-                </div>
-            `).join('');
-        }
-        renderExps();
-
-        // --- 3. 弹窗交互 ---
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function showDetail(id) {
-            const exp = initialExps.find(e => e.id === id);
-            if(exp) {
-                document.getElementById('modal-title').innerText = exp.title;
-                document.getElementById('modal-time').innerText = exp.time;
-                document.getElementById('modal-tag').innerText = exp.tag;
-                document.getElementById('modal-body').innerText = exp.body;
-                openModal('detail-modal');
-            }
-        }
-
-        // --- 4. 终端修复逻辑 (回车发送) ---
-        const termForm = document.getElementById('term-form');
-        const termOut = document.getElementById('term-out');
-        const termIn = document.getElementById('term-in');
-
-        termForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // 阻止刷新页面
-            const cmd = termIn.value.trim();
-            if(!cmd) return;
-
-            const time = new Date().toLocaleTimeString('en-GB');
-            const line = document.createElement('div');
-            line.style.marginBottom = '5px';
-            line.innerHTML = `<span style="color:#333;">[${time}]</span> <span style="color:#eee;">Visitor:</span> ${cmd}`;
-            
-            termOut.appendChild(line);
-            termOut.scrollTop = termOut.scrollHeight;
-            termIn.value = '';
-
-            // 彩蛋回复
-            if(cmd.toLowerCase() === 'help') {
-                setTimeout(() => {
-                    const res = document.createElement('div');
-                    res.innerHTML = `<span style="color:var(--accent-green);">SYSTEM:</span> 可用命令: clear, status, about`;
-                    termOut.appendChild(res);
-                }, 500);
-            }
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // 录入新经历逻辑
-        document.getElementById('add-form').onsubmit = (e) => {
-            e.preventDefault();
-            const newExp = {
-                id: Date.now(),
-                title: document.getElementById('in-title').value,
-                time: document.getElementById('in-time').value,
-                tag: document.getElementById('in-tag').value,
-                body: document.getElementById('in-body').value
-            };
-            initialExps.unshift(newExp);
-            renderExps();
-            closeModal('add-modal');
-            e.target.reset();
-        };
+        /* --- 3. 简历数据渲染 --- */
+        const defaultExps = [
+            { id: 1, time: "2025.11 - 2025.12", title: "PHP新闻系统开发与安全加固", tag: "全栈开发 / 代码审计", shortDesc: "独立开发新闻系统，全站应用 PDO 预编译，终结 SQL 注入与 IDOR 越权风险。" },
+            { id: 2, time: "2025.12 - 至今", title: "Web漏洞攻防演练与原理分析", tag: "靶场实战 / BurpSuite", shortDesc: "基于 Pikachu 靶场，完整复现攻击链，从底层代码级输出 OWASP Top 10 修复方案。" },
+            { id: 3, time: "2025", title: "湾区杯&羊城杯CTF实战", tag: "竞赛经历 / Writeup", shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，赛后复盘输出技术Writeup。" }
+        ];
+        document.getElementById('exp-grid').innerHTML = defaultExps.map(exp => `
+            <div class="bento-card">
+                <span class="bento-time">${exp.time}</span>
+                <h3 style="margin-bottom: 8px; font-size: 17px;">${exp.title}</h3>
+                <div class="bento-tag">${exp.tag}</div>
+                <p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p>
+            </div>
+        `).join('');
+
+        /* --- 4. 【核心修复】终端留言功能 --- */
+        const msgForm = document.getElementById('msg-form');
+        const msgInput = document.getElementById('msg-input');
+        const msgBoard = document.getElementById('msg-board');
+
+        // 初始化一条系统消息
+        msgBoard.innerHTML = `<div><span style="color:#444;">[00:00:00]</span> 系统已挂载，潜行模式启动。</div>`;
+
+        msgForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // 关键：阻止表单默认提交刷新页面
+            
+            const val = msgInput.value.trim();
+            if (!val) return;
+
+            // 获取当前时间戳
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                            now.getMinutes().toString().padStart(2, '0') + ':' + 
+                            now.getSeconds().toString().padStart(2, '0');
+
+            // 创建消息 DOM
+            const newMsg = document.createElement('div');
+            newMsg.innerHTML = `<span style="color:#444;">[${timeStr}]</span> <span style="color:var(--accent-white);">Visitor:</span> ${val}`;
+            
+            // 插入并滚动到底部
+            msgBoard.appendChild(newMsg);
+            msgBoard.scrollTop = msgBoard.scrollHeight;
+
+            // 清空输入框
+            msgInput.value = '';
+
+            // 彩蛋：简单的系统自动回复
+            if (val.toLowerCase() === 'help') {
+                setTimeout(() => {
+                    const reply = document.createElement('div');
+                    reply.innerHTML = `<span style="color:var(--accent-green);">[SYSTEM]</span> 可用命令: clear, status, about`;
+                    msgBoard.appendChild(reply);
+                    msgBoard.scrollTop = msgBoard.scrollHeight;
+                }, 400);
+            }
+        });
     </script>
 </body>
 </html>
