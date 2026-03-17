@@ -9,8 +9,8 @@
         /* --- 核心变量 --- */
         :root {
             --bg-deep: #050507;
-            --glass-bg: rgba(255, 255, 255, 0.01);
-            --glass-border: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f0f0f2;
             --text-sub: #8a8a93;
             --accent-white: #ffffff;
@@ -37,7 +37,7 @@
         /* --- 自定义“星子”光标 --- */
         #custom-cursor {
             width: 8px; height: 8px; background: #fff; border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999;
+            position: fixed; pointer-events: none; z-index: 10000;
             mix-blend-mode: difference; transform: translate(-50%, -50%);
             transition: width 0.3s, height 0.3s; box-shadow: 0 0 10px #fff;
         }
@@ -76,14 +76,35 @@
         .bento-card {
             background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);
             border-radius: 12px; padding: 24px; transition: var(--transition);
+            position: relative; overflow: hidden;
         }
-        .bento-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-3px); }
+        .bento-card:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-3px); background: rgba(255,255,255,0.03); }
         .bento-time { font-family: var(--font-mono); font-size: 11px; color: #555; margin-bottom: 8px; display: block; }
         .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: #fff; background: rgba(255, 255, 255, 0.05); padding: 3px 7px; border-radius: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .click-hint { font-size: 10px; color: var(--accent-green); opacity: 0; transition: 0.3s; margin-top: 15px; display: block; font-family: var(--font-mono); }
+        .bento-card:hover .click-hint { opacity: 1; }
+
+        /* --- 详情弹窗 (Modal) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            background: #08080a; border: 1px solid var(--glass-border);
+            width: 90%; max-width: 650px; padding: 40px; border-radius: 20px;
+            position: relative; transform: translateY(20px); transition: transform 0.4s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #444; font-size: 24px; cursor: pointer; transition: 0.3s; }
+        .close-btn:hover { color: #fff; }
+        .modal-body { line-height: 1.8; color: #ccc; font-size: 15px; margin-top: 20px; white-space: pre-wrap; }
 
         /* --- Terminal --- */
         .terminal { background: #000; border: 1px solid #121212; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
-        .terminal-output { height: 220px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .terminal-output { height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
         .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #222; padding-top: 15px; }
         .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
         .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
@@ -93,6 +114,16 @@
 
     <canvas id="bg-canvas"></canvas>
     <div id="custom-cursor"></div>
+
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeDetail()">&times;</button>
+            <span id="m-time" class="bento-time"></span>
+            <h2 id="m-title" style="margin-bottom: 10px;"></h2>
+            <div id="m-tag" class="bento-tag"></div>
+            <div id="m-body" class="modal-body"></div>
+        </div>
+    </div>
 
     <nav>
         <a href="#hero">档案首页</a>
@@ -126,7 +157,7 @@
         </section>
 
         <section id="experience">
-            <div class="section-title">核心实战档案 // ARCHIVES</div>
+            <div class="section-title">核心实战档案 // ARCHIVES (点击查看详情)</div>
             <div class="grid" id="exp-grid"></div>
         </section>
 
@@ -145,121 +176,126 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
-        /* --- 1. Three.js 写实银河背景 --- */
+        /* --- 1. Three.js 写实银河背景 (保留) --- */
         const canvas = document.getElementById('bg-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
         camera.position.z = 500;
-
         const total_stars = 15000;
         const positions = new Float32Array(total_stars * 3);
-        const colors = new Float32Array(total_stars * 3);
-
         for (let i = 0; i < total_stars; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 2000;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
-            const brightness = 0.8 + Math.random() * 0.2;
-            colors[i * 3] = brightness;
-            colors[i * 3 + 1] = brightness;
-            colors[i * 3 + 2] = brightness;
+            positions[i*3] = (Math.random()-0.5)*2000;
+            positions[i*3+1] = (Math.random()-0.5)*2000;
+            positions[i*3+2] = (Math.random()-0.5)*2000;
         }
-
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({ 
-            size: 2, sizeAttenuation: true, transparent: true, opacity: 0.8, vertexColors: true, blending: THREE.AdditiveBlending 
-        });
+        const material = new THREE.PointsMaterial({ size: 1.8, color: 0xffffff, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
         const stars = new THREE.Points(geometry, material);
         scene.add(stars);
 
-        /* --- 2. 鼠标交互与自定义光标 --- */
+        /* --- 2. 交互逻辑 (保留) --- */
         const cursor = document.getElementById('custom-cursor');
         let mouse_x = 0, mouse_y = 0;
-
         window.addEventListener('mousemove', e => {
-            mouse_x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse_y = -(e.clientY / window.innerHeight) * 2 + 1;
+            mouse_x = (e.clientX/window.innerWidth)*2-1;
+            mouse_y = -(e.clientY/window.innerHeight)*2+1;
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
         function animate() {
             requestAnimationFrame(animate);
-            stars.rotation.y += 0.0008; // 银河自转
-            stars.rotation.x += (mouse_y * 0.05 - stars.rotation.x) * 0.05;
-            stars.rotation.z += (mouse_x * 0.05 - stars.rotation.z) * 0.05;
+            stars.rotation.y += 0.0006;
+            stars.rotation.x += (mouse_y*0.05 - stars.rotation.x)*0.05;
             renderer.render(scene, camera);
         }
         animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        /* --- 3. 简历数据渲染 --- */
+        /* --- 3. 简历数据渲染 + 详情功能 --- */
         const defaultExps = [
-            { id: 1, time: "2025.11 - 2025.12", title: "PHP新闻系统开发与安全加固", tag: "全栈开发 / 代码审计", shortDesc: "独立开发新闻系统，全站应用 PDO 预编译，终结 SQL 注入与 IDOR 越权风险。" },
-            { id: 2, time: "2025.12 - 至今", title: "Web漏洞攻防演练与原理分析", tag: "靶场实战 / BurpSuite", shortDesc: "基于 Pikachu 靶场，完整复现攻击链，从底层代码级输出 OWASP Top 10 修复方案。" },
-            { id: 3, time: "2025", title: "湾区杯&羊城杯CTF实战", tag: "竞赛经历 / Writeup", shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，赛后复盘输出技术Writeup。" }
+            { 
+                id: 1, 
+                time: "2025.11 - 2025.12", 
+                title: "PHP新闻系统开发与安全加固", 
+                tag: "全栈开发 / 代码审计", 
+                shortDesc: "独立开发新闻系统，全站应用 PDO 预编译，终结 SQL 注入风险。",
+                details: "【项目背景】为了深入理解 Web 漏洞成因，从零构建了一套具备完整 CURD 功能的新闻管理系统。\n\n【核心安全实现】\n1. 防御 SQL 注入：全面弃用传统的字符串拼接方式，使用 PDO 预编译指令处理所有数据库交互。\n2. 防御 XSS：在输出端实施了严格的 HTML 实体转义。\n3. 权限加固：修复了 IDOR（越权漏洞），确保用户只能编辑属于自己的文章。"
+            },
+            { 
+                id: 2, 
+                time: "2025.12 - 至今", 
+                title: "Web 漏洞攻防演练与原理分析", 
+                tag: "靶场实战 / BurpSuite", 
+                shortDesc: "基于 Pikachu 靶场，完整复现攻击链，输出代码级修复方案。",
+                details: "【攻防实战】在本地环境部署多个主流靶场，针对 OWASP Top 10 漏洞进行专项突破。\n\n【关键成果】\n1. 漏洞挖掘：熟练使用 Burp Suite 进行抓包分析、参数爆破以及 Intruder 攻击。\n2. 原理深挖：不局限于工具利用，通过分析 PHP 源代码理解漏洞产生的物理逻辑。\n3. 报告撰写：记录每一个漏洞的 Payload 构造过程及有效的后端修复建议。"
+            },
+            { 
+                id: 3, 
+                time: "2025", 
+                title: "湾区杯&羊城杯 CTF 实战", 
+                tag: "竞赛经历 / Writeup", 
+                shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，赛后复盘输出技术 Writeup。",
+                details: "【竞赛复盘】参与大湾区及羊城杯网络安全竞赛，负责 Web 方向题目的解题。\n\n【实战技巧】\n1. 快速扫描：识别敏感目录与源码泄露（.git/.svn）。\n2. 漏洞组合拳：利用文件上传绕过结合条件竞争（Race Condition）获取 WebShell。\n3. 文档沉淀：赛后通过撰写详细的 Writeup，系统化复盘解题思路与工具链优化。"
+            }
         ];
-        document.getElementById('exp-grid').innerHTML = defaultExps.map(exp => `
-            <div class="bento-card">
+
+        // 渲染卡片
+        const grid = document.getElementById('exp-grid');
+        grid.innerHTML = defaultExps.map(exp => `
+            <div class="bento-card" onclick="openDetail(${exp.id})">
                 <span class="bento-time">${exp.time}</span>
                 <h3 style="margin-bottom: 8px; font-size: 17px;">${exp.title}</h3>
                 <div class="bento-tag">${exp.tag}</div>
                 <p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p>
+                <span class="click-hint">READ MORE // 查阅详情 _</span>
             </div>
         `).join('');
 
-        /* --- 4. 【核心修复】终端留言功能 --- */
+        // 弹窗逻辑
+        const modal = document.getElementById('detail-modal');
+        function openDetail(id) {
+            const exp = defaultExps.find(e => e.id === id);
+            document.getElementById('m-title').innerText = exp.title;
+            document.getElementById('m-time').innerText = exp.time;
+            document.getElementById('m-tag').innerText = exp.tag;
+            document.getElementById('m-body').innerText = exp.details;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeDetail() {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // 点击背景关闭
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeDetail();
+        });
+
+        /* --- 4. 终端修复 (保留功能) --- */
         const msgForm = document.getElementById('msg-form');
         const msgInput = document.getElementById('msg-input');
         const msgBoard = document.getElementById('msg-board');
 
-        // 初始化一条系统消息
-        msgBoard.innerHTML = `<div><span style="color:#444;">[00:00:00]</span> 系统已挂载，潜行模式启动。</div>`;
+        msgBoard.innerHTML = `<div><span style="color:#444;">[00:00:00]</span> 系统已挂载，详情查阅协议已激活。</div>`;
 
         msgForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // 关键：阻止表单默认提交刷新页面
-            
+            e.preventDefault();
             const val = msgInput.value.trim();
             if (!val) return;
-
-            // 获取当前时间戳
             const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                            now.getMinutes().toString().padStart(2, '0') + ':' + 
-                            now.getSeconds().toString().padStart(2, '0');
-
-            // 创建消息 DOM
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
             const newMsg = document.createElement('div');
             newMsg.innerHTML = `<span style="color:#444;">[${timeStr}]</span> <span style="color:var(--accent-white);">Visitor:</span> ${val}`;
-            
-            // 插入并滚动到底部
             msgBoard.appendChild(newMsg);
             msgBoard.scrollTop = msgBoard.scrollHeight;
-
-            // 清空输入框
             msgInput.value = '';
-
-            // 彩蛋：简单的系统自动回复
-            if (val.toLowerCase() === 'help') {
-                setTimeout(() => {
-                    const reply = document.createElement('div');
-                    reply.innerHTML = `<span style="color:var(--accent-green);">[SYSTEM]</span> 可用命令: clear, status, about`;
-                    msgBoard.appendChild(reply);
-                    msgBoard.scrollTop = msgBoard.scrollHeight;
-                }, 400);
-            }
         });
     </script>
 </body>
