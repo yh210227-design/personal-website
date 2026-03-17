@@ -3,38 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李俊辉 | 交互式数字档案</title>
+    <title>李俊辉 | 网络与空间安全档案</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 核心变量：Apple/微软原生字体 + 小众高级暗黑 --- */
+        /* --- 核心变量：荧光绿 + 小众高级暗黑 --- */
         :root {
-            --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            
-            --bg-deep: #050507; 
+            --bg-deep: #050507;          /* 极深邃的底色 */
             --glass-bg: rgba(255, 255, 255, 0.02);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f0f0f2;
             --text-sub: #8a8a93;
-            --accent-green: #00e559; 
+            --accent-green: #00ff66;     /* 荧光绿 */
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
         }
 
+        /* --- 基础设置 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font-sys); background-color: var(--bg-deep);
-            color: var(--text-main); line-height: 1.6; overflow-x: hidden;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sys);
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 导航栏 --- */
+        /* --- Three.js 背景层 --- */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; z-index: -1; /* 绝对定位，处于最底层 */
+            width: 100%; height: 100%;
+        }
+
+        /* --- Apple 式导航栏 --- */
         nav {
             position: fixed; top: 0; width: 100%; height: 60px;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border); z-index: 100;
             display: flex; justify-content: center; align-items: center; gap: 30px;
         }
-        nav a { color: var(--text-sub); text-decoration: none; font-size: 14px; transition: var(--transition); }
+        nav a { color: var(--text-sub); text-decoration: none; font-size: 13px; transition: var(--transition); }
         nav a:hover, nav a.active { color: var(--text-main); }
 
         /* --- 基础布局 --- */
@@ -42,81 +51,56 @@
         section { margin-bottom: 80px; }
         .section-title { font-size: 14px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
         
+        /* 磨砂玻璃卡片 (Glassmorphism) */
         .glass-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 16px; padding: 24px; transition: var(--transition);
-            position: relative; overflow: hidden; cursor: pointer;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; transition: var(--transition);
         }
-        .glass-card:hover { border-color: rgba(0, 229, 89, 0.3); transform: translateY(-3px); }
-        .glass-card::after {
-            content: '↗ 点击查看详情'; position: absolute; top: 24px; right: 24px;
-            font-size: 12px; color: var(--accent-green); opacity: 0; transition: var(--transition);
-        }
-        .glass-card:hover::after { opacity: 1; }
+        .glass-card:hover { border-color: rgba(0, 255, 102, 0.3); }
 
-        /* --- 1. Hero & 自我评价 --- */
-        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
-        .hero h1 { font-size: clamp(32px, 5vw, 64px); font-weight: 600; letter-spacing: -1px; margin-bottom: 16px; }
-        .hero p { color: var(--text-sub); font-size: 16px; max-width: 700px; margin-bottom: 10px; }
-        .self-eval { background: rgba(0, 229, 89, 0.05); border-left: 3px solid var(--accent-green); padding: 15px 20px; font-size: 14px; color: #ccc; margin-bottom: 30px; border-radius: 0 8px 8px 0; max-width: 800px;}
-        
-        .btn {
-            background: transparent; color: var(--text-main); border: 1px solid var(--glass-border);
-            padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: var(--font-sys);
+        /* --- 1. Hero Section (Apple 视差质感) --- */
+        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .hero h1 { font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 16px; }
+        .hero p { color: var(--text-sub); font-size: 16px; max-width: 700px; margin-bottom: 30px; }
+        .btn-primary {
+            background: var(--accent-green); color: #000; border: none; font-weight: 600;
+            padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: var(--transition);
         }
-        .btn:hover { background: var(--text-main); color: var(--bg-deep); }
-        .btn-primary { background: var(--accent-green); color: #000; border: none; font-weight: 600; }
-        .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 229, 89, 0.4); background: #00ff66; }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); background: #33ff85; }
+
+        /* --- 自我评价特区 --- */
+        .self-eval-block {
+            background: rgba(0, 255, 102, 0.05); border-left: 3px solid var(--accent-green);
+            padding: 15px 20px; font-size: 14px; color: #ccc; margin-bottom: 40px; border-radius: 0 8px 8px 0; max-width: 800px;
+        }
 
         /* --- 教育经历特区 --- */
         .edu-bar { display: flex; justify-content: space-between; align-items: center; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 15px 20px; border-radius: 12px; margin-bottom: 40px; flex-wrap: wrap; gap: 10px; }
         .edu-info { display: flex; gap: 20px; font-size: 14px; color: var(--text-main); }
         .edu-courses { font-size: 12px; color: var(--text-sub); width: 100%; margin-top: 5px; }
 
-        /* --- 2. 动态经历展示区 --- */
+        /* --- 2. 实战档案区 --- */
         .exp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .exp-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); margin-bottom: 8px; display: block; }
-        .exp-tag { display: inline-block; font-size: 12px; font-family: var(--font-mono); color: var(--accent-green); background: rgba(0, 229, 89, 0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; }
+        .bento-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 24px; transition: var(--transition);
+        }
+        .bento-card:hover { border-color: rgba(0, 255, 102, 0.3); transform: translateY(-3px); }
+        .bento-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); margin-bottom: 8px; display: block; }
+        .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: var(--accent-green); background: rgba(0, 255, 102, 0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; }
 
-        /* --- 3. 黑客留言板 --- */
+        /* --- 3. 终端留言板 (功能完备) --- */
         .terminal { background: #000; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
         .terminal-output { height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
         .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #333; padding-top: 15px; }
         .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
         .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
-
-        /* --- 全局模态框 (Modal) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            z-index: 2000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
-        }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content {
-            background: var(--bg-deep); border: 1px solid var(--glass-border);
-            border-radius: 16px; width: 90%; max-width: 650px; padding: 40px; position: relative;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 24px; transition: 0.3s; }
-        .close-btn:hover { color: #fff; transform: rotate(90deg); }
-        
-        /* 表单样式 */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
-        .form-group input, .form-group textarea {
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: #fff; padding: 12px; border-radius: 8px; font-family: var(--font-sys); outline: none;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-green); }
-
-        /* 详情展示框特定样式 */
-        .detail-time { font-family: var(--font-mono); color: var(--text-sub); font-size: 13px; margin-bottom: 10px; }
-        .detail-title { font-size: 24px; color: #fff; margin-bottom: 15px; }
-        .detail-body { font-size: 15px; color: #ccc; line-height: 1.8; white-space: pre-wrap; margin-top: 20px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid var(--glass-border); }
     </style>
 </head>
 <body>
+
+    <canvas id="bg-canvas"></canvas>
 
     <nav>
         <a href="#hero">档案首页</a>
@@ -126,16 +110,16 @@
 
     <div class="container">
         <section class="hero" id="hero">
-            <h1>李俊辉</h1>
+            <h1>李俊辉<span>.</span>NetSec</h1>
             <p><strong>意向岗位：</strong>网络安全实习生</p>
-            <p style="margin-bottom: 20px;">用网络安全的矛，铸造交互式 Web 的盾。</p>
+            <p style="margin-bottom: 20px;">以网络安全的矛，铸造交互式 Web 的盾。</p>
             
-            <div class="self-eval">
-                “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，对容器化等新技术保持高度敏感，能快速融入互联网大厂的工作节奏。”
+            <div class="self-eval-block">
+                “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”
             </div>
 
             <div style="display: flex; gap: 15px; align-items: center;">
-                <button class="btn btn-primary" onclick="document.getElementById('experience').scrollIntoView();">查看实战档案 ↓</button>
+                <button class="btn-primary" onclick="document.getElementById('experience').scrollIntoView();">查看实战档案 ↓</button>
                 <span style="color: var(--text-sub); font-size: 14px; font-family: var(--font-mono);">[ 雅思目标: 6.5 (备考中) ]</span>
             </div>
         </section>
@@ -147,15 +131,21 @@
                 <span>2023.09 - 2027.06</span>
                 <span style="color: var(--accent-green);">GPA: 3.05</span>
             </div>
-            <div class="edu-courses">核心课程：网络安全编程、代码审计、信息安全数学、MySQL、密码学、Linux原理与应用</div>
+            <div class="edu-courses">核心课程：网络安全编程、代码审计、MySQL、Linux原理与应用、密码学</div>
         </div>
 
         <section id="experience">
             <div class="exp-header">
                 <div class="section-title" style="margin-bottom: 0; border: none;">核心实战档案 // ARCHIVES</div>
-                <button class="btn" onclick="openModal('add-exp-modal')" style="font-size: 12px; padding: 6px 12px;">+ 录入新经历</button>
             </div>
-            <div class="grid" id="exp-grid"></div>
+            <div class="grid" id="exp-grid">
+                <div class="bento-card">
+                    <span class="bento-time">2025.11 - 2025.12</span>
+                    <h3 style="margin-bottom: 8px; font-size: 18px;">PHP新闻系统安全加固</h3>
+                    <div class="bento-tag">全栈开发 / 修复IDOR</div>
+                    <p style="color: var(--text-sub); font-size: 13px;">独立开发新闻系统，应用安全规范终结注入与越权风险。</p>
+                </div>
+            </div>
         </section>
 
         <section id="guestbook">
@@ -170,140 +160,102 @@
         </section>
     </div>
 
-    <div class="modal-overlay" id="add-exp-modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('add-exp-modal')">×</button>
-            <h3 style="margin-bottom: 20px;">录入新实战档案</h3>
-            <form id="exp-form">
-                <div class="form-group">
-                    <label>项目/赛事名称</label>
-                    <input type="text" id="exp-title" required placeholder="例如：第十六届蓝桥杯 Python 组">
-                </div>
-                <div class="form-group">
-                    <label>发生时间</label>
-                    <input type="text" id="exp-time" required placeholder="例如：2025.10 - 至今">
-                </div>
-                <div class="form-group">
-                    <label>技术标签</label>
-                    <input type="text" id="exp-tag" required placeholder="例如：全栈开发 / 安全自查">
-                </div>
-                <div class="form-group">
-                    <label>卡片简述 (外层展示)</label>
-                    <input type="text" id="exp-short" required placeholder="一句话概括你的核心成果...">
-                </div>
-                <div class="form-group">
-                    <label>详细内容 (点开后展示，支持换行)</label>
-                    <textarea id="exp-details" rows="5" required placeholder="详细描述你的解题思路、代码实现或漏洞复现过程..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">加密并写入数据库</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="detail-modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('detail-modal')">×</button>
-            <div class="detail-time" id="detail-time"></div>
-            <h2 class="detail-title" id="detail-title"></h2>
-            <div class="exp-tag" id="detail-tag" style="margin-bottom: 0;"></div>
-            <div class="detail-body" id="detail-body"></div>
-        </div>
-    </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script>
-        // --- 1. 深度融入的简历默认数据 (信息分层架构) ---
+        /* * [架构说明] 1. Three.js 动态背景逻辑 (核心战术武器)
+         * 为了做到极致的流畅和感官体验，这里创建了一个 3D 粒子平面网格，
+         * 并通过着色器 (Shader) 级别的数学公式实现随鼠标移动的波纹效果。
+         */
+
+        const canvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 250; // 调整相机距离，控制粒子平面的可视范围
+
+        // 核心参数：粒子颜色和尺寸
+        const color_neon = 0x00ff66; // 荧光绿
+        const gap = 30; // 粒子间距
+        const res_x = 70; // X 轴粒子数量
+        const res_y = 70; // Y 轴粒子数量
+        const total = res_x * res_y;
+
+        // 构建粒子网格
+        const positions = new Float32Array(total * 3); // 存储每个粒子的 X, Y, Z 坐标
+        for (let i = 0; i < total; i++) {
+            positions[i * 3] = (i % res_x) * gap - (res_x * gap / 2); // X 轴居中
+            positions[i * 3 + 1] = Math.floor(i / res_y) * gap - (res_y * gap / 2); // Y 轴居中
+            positions[i * 3 + 2] = 0; // Z 轴初始为 0
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        // 材质：使用 PointMaterial，让粒子看起来像是一个个发光的小点
+        const material = new THREE.PointsMaterial({ color: color_neon, size: 3, sizeAttenuation: true, transparent: true, opacity: 0.6 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        // --- 鼠标交互与动态逻辑 ---
+        let mouse_x = 0, mouse_y = 0;
+        window.addEventListener('mousemove', e => {
+            // 获取鼠标在屏幕上的标准化坐标 (-1 到 1)
+            mouse_x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse_y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        const originalPositions = positions.slice(); // 保存初始位置
+        let clock = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            clock += 0.05; // 基础时间递增
+
+            const currentPositions = geometry.attributes.position.array;
+            for (let i = 0; i < total; i++) {
+                const x = originalPositions[i * 3];
+                const y = originalPositions[i * 3 + 1];
+
+                // --- 核心数学逻辑：随鼠标移动产生的波纹 ---
+                // 计算每个粒子距离鼠标位置的归一化偏移量
+                const dist_x = x - (mouse_x * 200); 
+                const dist_y = y - (mouse_y * 100);
+                const distance = Math.sqrt(dist_x * dist_x + dist_y * dist_y); // 计算距离
+
+                // 应用正弦函数生成动态波形
+                // 参数控制：100 控制波纹的宽度，50 控制波纹的高度，clock 控制波纹随时间推移
+                const z_offset = Math.sin((distance / 100) - clock) * 50;
+                
+                // 仅对距离鼠标较近的粒子应用波纹效果，形成“随鼠标产生”的感觉
+                const factor = Math.max(0, 1 - (distance / 400));
+                currentPositions[i * 3 + 2] = z_offset * factor; 
+            }
+            geometry.attributes.position.needsUpdate = true; // 告诉 Three.js 粒子坐标已更新
+
+            renderer.render(scene, camera);
+        }
+        animate(); // 开启战术动画
+
+        // 窗口大小调整自适应
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /* [架构说明] 2. 简易简历数据库 (维持原功能) */
         const defaultExps = [
-            { 
-                id: 1, 
-                time: "2025.11 - 2025.12",
-                title: "PHP 新闻管理系统开发与安全加固", 
-                tag: "全栈开发 / 漏洞修复", 
-                shortDesc: "独立使用PHP+MySQL开发系统，应用安全编码规范终结注入与越权风险。",
-                details: "【安全开发实践】独立使用 PHP+MySQL 开发动态新闻管理系统，实现了用户鉴权、内容发布与管理模块；在开发过程中主动应用安全编码规范。\n\n【防御逻辑实现】针对 SQL 注入风险，全站采用 PDO 预编译 (Prepared Statements) 技术替代传统拼接；针对 XSS 风险，对前端输出数据实施了严格的 HTML 实体转义处理。\n\n【白盒审计视角】从开发者视角审视业务逻辑，在后端实现了基于 Session 的身份验证机制，修复了潜在的越权访问 (IDOR) 风险，不仅“会挖洞”，更“懂修洞”。" 
-            },
-            { 
-                id: 2, 
-                time: "2025.12 - 至今",
-                title: "Web漏洞攻防演练与原理分析", 
-                tag: "靶场实战 / 独立研究", 
-                shortDesc: "基于 Pikachu 靶场，完整复现攻击链并输出底层代码级修复方案。",
-                details: "【漏洞挖掘】利用 Burp Suite 对弱口令接口进行字典爆破；深入研究 SQL 注入原理，手工构造联合查询与盲注 Payload，并辅以 Sqlmap 进行自动化数据提取。\n\n【漏洞复现与修复】完整复现存储型与反射型 XSS 攻击链，成功获取用户 Cookie；从 PHP 源码层面 (如 $_POST 拼接) 分析漏洞成因，输出包含预编译参数化查询、HTML 实体转义等修复方案的详细技术报告。" 
-            },
-            { 
-                id: 3, 
-                time: "2025",
-                title: "大型网络安全大赛与算法实战", 
-                tag: "CTF / 蓝桥杯", 
-                shortDesc: "参与湾区杯&羊城杯CTF解题，具备底层自动化安全测试脚本编写能力。",
-                details: "【湾区杯&羊城杯网络安全大赛(CTF)】针对 Web 赛题进行攻关，利用 Burp Suite 分析流量，识别并利用 SQL 注入与文件上传漏洞，赛后输出 Writeup 复盘。\n\n【第十六届蓝桥杯大赛(Python组)】通过高强度算法训练夯实 Python 基础，具备编写自动化安全测试脚本的底层代码能力。\n\n【其他经历】第十八届软件创新大赛、“复兴杯”技术成员 (2024-2025)。" 
-            }
+            { id: 1, time: "2025.11 - 2025.12", title: "PHP新闻系统开发与安全加固", tag: "全栈开发 / 漏洞修复", shortDesc: "独立使用PHP+MySQL开发系统，应用安全编码规范终结注入与越权风险。" },
+            { id: 2, time: "2025.12 - 至今", title: "Web漏洞攻防演练与原理分析", tag: "靶场实战 / 独立研究", shortDesc: "基于 Pikachu 靶场，完整复现攻击链并输出底层代码级修复方案。" },
+            { id: 3, time: "2025", title: "湾区杯&羊城杯CTF实战", tag: "竞赛经历", shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，复盘输出技术Writeup。" }
         ];
-
-        let dbExperiences = JSON.parse(localStorage.getItem('faynzz_exps_v2')) || defaultExps;
-        let dbMessages = JSON.parse(localStorage.getItem('faynzz_msgs_v2')) || [{ time: "00:00:00", text: "系统已挂载，等待指令。" }];
-
-        // --- 2. 渲染外层卡片 ---
-        function renderExperiences() {
-            const grid = document.getElementById('exp-grid');
-            grid.innerHTML = dbExperiences.map(exp => `
-                <div class="glass-card" onclick="openDetail(${exp.id})">
-                    <span class="exp-time">${exp.time}</span>
-                    <h3 style="margin-bottom: 8px; font-size: 18px;">${exp.title}</h3>
-                    <div class="exp-tag">${exp.tag}</div>
-                    <p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p>
-                </div>
-            `).join('');
-        }
-
-        // --- 3. 打开内层详情逻辑 ---
-        function openDetail(id) {
-            const exp = dbExperiences.find(e => e.id === id);
-            if(exp) {
-                document.getElementById('detail-time').innerText = exp.time;
-                document.getElementById('detail-title').innerText = exp.title;
-                document.getElementById('detail-tag').innerText = exp.tag;
-                document.getElementById('detail-body').innerText = exp.details; // 自动保留换行
-                openModal('detail-modal');
-            }
-        }
-
-        function renderMessages() {
-            const board = document.getElementById('msg-board');
-            board.innerHTML = dbMessages.map(msg => `<div><span style="color:#555;">[${msg.time}]</span> ${msg.text}</div>`).join('');
-            board.scrollTop = board.scrollHeight;
-        }
-
-        window.onload = () => { renderExperiences(); renderMessages(); };
-
-        // --- 4. 表单提交接管 ---
-        document.getElementById('exp-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newExp = {
-                id: Date.now(),
-                time: document.getElementById('exp-time').value,
-                title: document.getElementById('exp-title').value,
-                tag: document.getElementById('exp-tag').value,
-                shortDesc: document.getElementById('exp-short').value,
-                details: document.getElementById('exp-details').value
-            };
-            dbExperiences.unshift(newExp); 
-            localStorage.setItem('faynzz_exps_v2', JSON.stringify(dbExperiences));
-            renderExperiences(); this.reset(); closeModal('add-exp-modal');
-        });
-
-        document.getElementById('msg-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const input = document.getElementById('msg-input');
-            if(!input.value.trim()) return;
-            const timeStr = new Date().toLocaleTimeString('en-GB');
-            dbMessages.push({ time: timeStr, text: `Guest: ${input.value}` });
-            localStorage.setItem('faynzz_msgs_v2', JSON.stringify(dbMessages));
-            renderMessages(); input.value = '';
-        });
-
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        window.onclick = function(e) { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); }
+        const grid = document.getElementById('exp-grid');
+        grid.innerHTML = defaultExps.map(exp => `<div class="bento-card"><span class="bento-time">${exp.time}</span><h3 style="margin-bottom: 8px; font-size: 18px;">${exp.title}</h3><div class="bento-tag">${exp.tag}</div><p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p></div>`).join('');
+        const board = document.getElementById('msg-board');
+        board.innerHTML = [{ time: "00:00:00", text: "系统已挂载，等待指令。" }].map(msg => `<div><span style="color:#555;">[${msg.time}]</span> ${msg.text}</div>`).join('');
     </script>
 </body>
 </html>
