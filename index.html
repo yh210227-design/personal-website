@@ -3,281 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAynzz | Cyber-Sec Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
+    <title>李俊辉 | 网络安全实习生作品集</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0d1117;          /* 深邃背景 */
-            --neon-green: #00ff41;       /* 荧光绿 */
-            --pine-green: #2d5a41;       /* 暗松绿 */
-            --glass-white: rgba(255, 255, 255, 0.03); 
-            --glass-border: rgba(0, 255, 65, 0.2);
-            --font-main: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --bg-pure: #000000;
+            --bg-card: #050505;
+            --accent-purple: #bf00ff; /* 核心霓虹紫 */
+            --text-apple: #f5f5f7;
+            --text-dim: #a1a1a6;
+            --glass-blur: blur(20px);
+            --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* --- 基础设置 --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; } /* 隐藏原生鼠标 */
-        html { scroll-behavior: smooth; }
+        /* --- 基础样式与视差准备 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--bg-dark);
-            color: #e6edf3;
-            font-family: var(--font-main);
+            background-color: var(--bg-pure);
+            color: var(--text-apple);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow-x: hidden;
-            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 自定义十字准星鼠标 --- */
-        #cursor {
-            width: 20px; height: 20px;
-            border: 1px solid var(--neon-green);
-            position: fixed; pointer-events: none;
-            z-index: 9999; transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-        #cursor::after {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 4px; height: 4px; background: var(--neon-green);
-            transform: translate(-50%, -50%);
-        }
-
-        /* --- 动态粒子背景 (Canvas) --- */
-        #bg-canvas {
-            position: fixed; top: 0; left: 0; z-index: -1;
-            width: 100%; height: 100%; opacity: 0.4;
-        }
-
-        /* --- 导航栏 --- */
+        /* --- Apple 式导航栏 --- */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
+            position: fixed; top: 0; width: 100%; height: 48px;
+            background: rgba(0,0,0,0.8); backdrop-filter: var(--glass-blur);
+            z-index: 9999; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: center; align-items: center;
         }
-        .logo { font-family: var(--font-mono); font-weight: 700; color: var(--neon-green); font-size: 1.2rem; }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { 
-            color: #8b949e; text-decoration: none; font-family: var(--font-mono); 
-            font-size: 0.9rem; transition: var(--transition);
-        }
-        .nav-links a:hover { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
+        nav a { color: var(--text-dim); text-decoration: none; font-size: 12px; margin: 0 20px; transition: 0.3s; }
+        nav a:hover { color: #fff; }
 
-        /* --- 通用磨砂玻璃卡片 --- */
-        .glass-card {
-            background: var(--glass-white);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: var(--transition);
-        }
-        .glass-card:hover { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 65, 0.1); }
-
-        /* --- 1. Hero Section (F型首横) --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
-        #hero {
+        /* --- Hero Section (Apple 官网质感) --- */
+        .hero {
             height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: flex-start; /* F布局左对齐 */
+            justify-content: center; align-items: center; text-align: center;
+            background: radial-gradient(circle at 50% 50%, #1a0033 0%, #000 70%);
+            padding-top: 48px;
         }
-        .hero-tag { font-family: var(--font-mono); color: var(--neon-green); margin-bottom: 1rem; }
-        #hero h1 { font-size: 5rem; font-weight: 800; line-height: 1; margin-bottom: 1.5rem; letter-spacing: -3px; }
-        #hero p { max-width: 600px; font-size: 1.2rem; color: #8b949e; margin-bottom: 2rem; }
-        .btn {
-            padding: 12px 32px; background: transparent; border: 1px solid var(--neon-green);
-            color: var(--neon-green); font-family: var(--font-mono); font-weight: bold;
-            text-decoration: none; border-radius: 4px; transition: var(--transition);
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 80px); font-weight: 800; letter-spacing: -0.05em;
+            background: linear-gradient(180deg, #fff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
         }
-        .btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 30px var(--neon-green); }
-
-        /* --- 2. About & 3. Skills Matrix --- */
-        section { padding: 100px 0; }
-        .section-title { font-size: 2rem; margin-bottom: 3rem; font-family: var(--font-mono); display: flex; align-items: center; gap: 15px; }
-        .section-title::after { content: ''; height: 1px; flex-grow: 1; background: var(--glass-border); }
-
-        .about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; } /* F型权重分布 */
-        .skill-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .skill-item h4 { color: var(--neon-green); margin-bottom: 1rem; font-family: var(--font-mono); }
-        .tag { display: inline-block; padding: 4px 12px; background: rgba(0, 255, 65, 0.1); border-radius: 4px; margin: 4px; font-size: 0.8rem; }
-
-        /* --- 4. Projects (可筛选) --- */
-        .filter-btns { margin-bottom: 2rem; display: flex; gap: 1rem; }
-        .filter-btn { background: none; border: 1px solid var(--glass-border); color: #8b949e; padding: 5px 15px; border-radius: 20px; font-family: var(--font-mono); }
-        .filter-btn.active { border-color: var(--neon-green); color: var(--neon-green); }
-
-        /* --- 5. Terminal 彩蛋 --- */
-        #terminal-trigger {
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: var(--bg-dark); border: 1px solid var(--neon-green);
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            color: var(--neon-green); font-size: 1.5rem; z-index: 2000; transition: var(--transition);
+        .hero p { font-size: 24px; color: var(--text-dim); font-weight: 400; margin-bottom: 40px; }
+        
+        /* --- 呼吸灯效果按钮 --- */
+        .btn-breath {
+            padding: 12px 30px; border-radius: 980px; background: #fff;
+            color: #000; font-weight: 600; text-decoration: none;
+            transition: var(--transition); border: 2px solid transparent;
         }
-        #terminal-trigger:hover { transform: rotate(180deg) scale(1.1); box-shadow: 0 0 20px var(--neon-green); }
-
-        #terminal-window {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            width: 80%; max-width: 600px; height: 400px;
-            background: rgba(13, 17, 23, 0.95); border: 1px solid var(--neon-green);
-            z-index: 3000; border-radius: 8px; padding: 20px; font-family: var(--font-mono);
-            transition: transform 0.3s ease;
+        .btn-breath:hover {
+            background: transparent; color: #fff;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px var(--accent-purple);
         }
-        #terminal-window.active { transform: translate(-50%, -50%) scale(1); }
-        .terminal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; font-size: 0.8rem; }
-        #terminal-output { height: 300px; overflow-y: auto; color: var(--neon-green); font-size: 0.9rem; }
+
+        /* --- 便当盒布局 (Bento Grid) --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 80px 20px; }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 240px;
+            gap: 20px;
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex; flex-direction: column;
+        }
+        /* 霓虹紫呼吸边框效果 */
+        .bento-card:hover {
+            border-color: var(--accent-purple);
+            box-shadow: inset 0 0 15px rgba(191, 0, 255, 0.1), 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        /* 卡片大小定义 */
+        .col-2 { grid-column: span 2; }
+        .row-2 { grid-row: span 2; }
+
+        /* --- 液态玻璃效果组件 --- */
+        .liquid-glass {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- 模块文字样式 --- */
+        .card-label { font-size: 12px; color: var(--accent-purple); font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+        .card-title { font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+        .card-content { font-size: 15px; color: var(--text-dim); }
+
+        /* --- 技能标签 --- */
+        .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+        .pill { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- 视差滚动基础 --- */
+        .parallax { transform: translateY(var(--p-y, 0)); transition: transform 0.1s ease-out; }
+
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+            .col-2, .row-2 { grid-column: span 1; grid-row: span 1; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="cursor"></div>
-    <canvas id="bg-canvas"></canvas>
-
     <nav>
-        <div class="logo">FAynzz://root</div>
-        <div class="nav-links">
-            <a href="#hero">HOME</a>
-            <a href="#about">ABOUT</a>
-            <a href="#skills">SKILLS</a>
-            <a href="#projects">WORK</a>
-        </div>
+        <a href="#hero">李俊辉.me</a>
+        <a href="#about">学历背景</a>
+        <a href="#skills">核心技能</a>
+        <a href="#projects">项目经验</a>
     </nav>
 
+    <section class="hero" id="hero">
+        <h1 class="parallax">李俊辉</h1>
+        <p class="parallax" style="--p-y: 10px;">网络安全实习生 [cite: 2]</p>
+        <a href="mailto:16675970815@163.com" class="btn-breath">联系我 [cite: 4]</a>
+    </section>
+
     <div class="container">
-        <section id="hero">
-            <div class="hero-tag">> Initializing connection...</div>
-            <h1>FAynzz<span style="color:var(--neon-green);">.</span></h1>
-            <p>广东科技学院 · 网络与空间安全专业。主攻 CTF 攻防、Web 安全、Three.js 交互式视觉。雅思备考 6.5+ 冲刺中。</p>
-            <div>
-                <a href="#projects" class="btn">VIEW PROJECTS</a>
-                <a href="#" class="btn" style="margin-left:15px; background:var(--neon-green); color:var(--bg-dark);">GET RESUME (PDF)</a>
+        <div class="bento-grid">
+            
+            <div class="bento-card col-2 liquid-glass" id="about">
+                <div class="card-label">Education</div>
+                <div class="card-title">广东科技学院 [cite: 10]</div>
+                <div class="card-content">
+                    网络空间安全 | 本科 (2023.09 - 2027.06) [cite: 11, 7, 8]<br>
+                    GPA: 3.05 | CET-4 [cite: 12, 19]<br>
+                    核心课程：代码审计、网络安全编程 [cite: 13]
+                </div>
             </div>
-        </section>
 
-        <section id="about">
-            <h2 class="section-title">01. ABOUT ME</h2>
-            <div class="about-grid">
-                <div class="glass-card">
-                    <p>我来自广东东莞，是一名热爱逆向思维的安全研究者。在大三这一年，我致力于将底层安全技术与现代 Web 交互相结合。</p>
-                    <p style="margin-top:1rem;">目标：在 2026 年 7 月前达成雅思 6.5，申请香港/海外名校硕士。</p>
-                </div>
-                <div class="glass-card" style="text-align: center;">
-                    <div style="font-size: 3rem; color: var(--neon-green);">6.5</div>
-                    <div style="font-family: var(--font-mono); font-size: 0.8rem;">IELTS TARGET</div>
-                </div>
+            <div class="bento-card" style="background: radial-gradient(circle at top right, #200040, #050505);">
+                <div class="card-label">Language</div>
+                <div class="card-title">IELTS 6.5</div>
+                <div class="card-content">雅思备考冲刺中，具备英文技术文档阅读能力 [cite: 19]</div>
             </div>
-        </section>
 
-        <section id="skills">
-            <h2 class="section-title">02. SKILLS MATRIX</h2>
-            <div class="skill-matrix">
-                <div class="glass-card skill-item">
-                    <h4>CORE SECURITY</h4>
-                    <div class="skill-tags">
-                        <span class="tag">SQL Injection</span><span class="tag">XSS</span>
-                        <span class="tag">Burp Suite</span><span class="tag">Metasploit</span>
-                    </div>
-                </div>
-                <div class="glass-card skill-item">
-                    <h4>DEV STACK</h4>
-                    <div class="skill-tags">
-                        <span class="tag">Three.js</span><span class="tag">Vite</span>
-                        <span class="tag">Python</span><span class="tag">Linux Bash</span>
-                    </div>
-                </div>
+            <div class="bento-card">
+                <div class="card-label">Certs</div>
+                <div class="card-title">NISP 二级</div>
+                <div class="card-content">工信部信息安全证书持有者 [cite: 19]</div>
             </div>
-        </section>
 
-        <section id="projects">
-            <h2 class="section-title">03. ARCHIVES</h2>
-            <div class="filter-btns">
-                <button class="filter-btn active">ALL</button>
-                <button class="filter-btn">CTF</button>
-                <button class="filter-btn">FRONT-END</button>
+            <div class="bento-card row-2 liquid-glass" id="skills">
+                <div class="card-label">Tech Stack</div>
+                <div class="card-title">Web 攻防专家 [cite: 16]</div>
+                <div class="card-content">
+                    精通 Burp Suite、Kali Linux [cite: 17]<br><br>
+                    具备 PHP 白盒审计与漏洞修复能力 [cite: 18]<br><br>
+                    熟练搭建 Docker 靶场进行黑白盒测试 [cite: 16]
+                </div>
+                <div class="pill-group">
+                    <div class="pill">OWASP Top 10</div>
+                    <div class="pill">Sqlmap</div>
+                    <div class="pill">PDO 预编译</div>
+                    <div class="pill">Python POC</div>
+                </div>
             </div>
-            <div class="glass-card" style="margin-bottom: 1.5rem;">
-                <h3 style="color:var(--neon-green);">CTFShow: HTTP Header Injection WP</h3>
-                <p>详细记录了关于 User-Agent, Referer 等注入漏洞的实战解题思路与自动化脚本实现。</p>
+
+            <div class="bento-card col-2 row-2" id="projects">
+                <div class="card-label">Project 01</div>
+                <div class="card-title">PHP 新闻管理系统开发与加固 [cite: 23]</div>
+                <div class="card-content">
+                    全栈安全开发实践。实现了基于 PDO 预编译的 SQL 注入防御，并针对 XSS 实施了严格的 HTML 实体转义 [cite: 25, 26]。<br><br>
+                    <strong>成果：</strong>从开发者视角修复了 IDOR 风险，实现“会挖洞更懂修洞” 。
+                </div>
+                <div class="pill-group" style="margin-top:20px;">
+                    <span class="pill">PHP + MySQL</span>
+                    <span class="pill">Session 鉴权</span>
+                    <span class="pill">安全编码规范</span>
+                </div>
             </div>
-        </section>
+
+            <div class="bento-card col-2">
+                <div class="card-label">Project 02</div>
+                <div class="card-title">Web 漏洞原理深度分析 [cite: 30]</div>
+                <div class="card-content">
+                    基于 Pikachu 靶场完整复现 XSS 攻击链，从源码层面分析 \$_POST 拼接导致的漏洞成因 [cite: 32]。
+                </div>
+            </div>
+
+            <div class="bento-card col-2 liquid-glass">
+                <div class="card-label">Competitions</div>
+                <div class="card-title">湾区杯 & 羊城杯 CTF [cite: 34]</div>
+                <div class="card-content">针对 Web 赛题进行攻关，利用 Burp Suite 分析流量，识别并利用 SQL 注入漏洞 [cite: 34]。</div>
+            </div>
+
+        </div>
     </div>
 
-    <div id="terminal-trigger">>_</div>
-    <div id="terminal-window">
-        <div class="terminal-header">
-            <span>root@faynzz:~</span>
-            <span onclick="toggleTerminal()" style="cursor:pointer;">[X]</span>
-        </div>
-        <div id="terminal-output">
-            <p>Welcome to FAynzz OS v1.0.0</p>
-            <p>Type 'help' for commands.</p>
-            <p style="margin-top:10px;"><span style="color:#fff;">faynzz@web:~$</span> <span id="typing-effect"></span></p>
-        </div>
-    </div>
+    <footer style="padding: 100px 0; text-align: center; color: var(--text-dim); border-top: 1px solid rgba(255,255,255,0.05);">
+        <p>© 2026 李俊辉 | 东莞网安学子 [cite: 9, 10]</p>
+        <p style="font-size: 12px; margin-top: 10px; font-family: var(--font-mono);">FAynzz_Digital_Identity_v2.0</p>
+    </footer>
 
     <script>
-        // 1. 十字准星追踪
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+        // 视差滚动简单实现
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxes = document.querySelectorAll('.parallax');
+            parallaxes.forEach(el => {
+                const speed = 0.3;
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
         });
-
-        // 2. 动态背景粒子 (轻量级 Canvas 实现)
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if(this.x > canvas.width) this.x = 0;
-                if(this.x < 0) this.x = canvas.width;
-                if(this.y > canvas.height) this.y = 0;
-                if(this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.fillStyle = '#00ff41';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        for(let i=0; i<100; i++) particles.push(new Particle());
-        function animate() {
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // 3. Terminal 逻辑
-        const termWindow = document.getElementById('terminal-window');
-        const trigger = document.getElementById('terminal-trigger');
-        trigger.onclick = toggleTerminal;
-        function toggleTerminal() {
-            termWindow.classList.toggle('active');
-            if(termWindow.classList.contains('active')) {
-                document.getElementById('typing-effect').innerText = "whoami";
-                setTimeout(() => {
-                    const p = document.createElement('p');
-                    p.innerText = "A Network Security Researcher from Dongguan.";
-                    document.getElementById('terminal-output').appendChild(p);
-                }, 1000);
-            }
-        }
     </script>
 </body>
 </html>
