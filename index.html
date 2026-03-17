@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAynzz | 网络安全学子 - 个人主页</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- 核心变量：绿色复古、小清新、高级感 --- */
+        :root {
+            --retro-green-dark: #2d5a41; /* 核心复古绿 */
+            --retro-green-light: #81c784; /* 小清新点缀 */
+            --bg-color: #f0f4f0; /* 高级米白偏绿背景 */
+            --text-main: #1a1a1a; /* 近乎全黑的主文字 */
+            --text-sub: #555555; /* 灰色副文字 */
+            --glass-bg: rgba(255, 255, 255, 0.6); /* 磨砂玻璃底色 */
+            --glass-border: rgba(255, 255, 255, 0.3); /* 磨砂玻璃边框 */
+            --shadow-premium: 0 8px 32px 0 rgba(31, 38, 135, 0.08); /* 现代悬浮阴影 */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 高级交互曲线 */
+        }
+
+        /* --- 基础样式复位 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* 背景加上淡淡的复古纸张纹理，增加质感 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%3C2d5a41' fill-opacity='0.03' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition-smooth); }
+        ul { list-style: none; }
+
+        /* --- 高级感通用组件 --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); /* 核心：磨砂玻璃效果 */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+            padding: 2.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px); /* 互动：悬浮升起 */
+            box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.12);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--retro-green-dark);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px; /* 现代枕头按钮 */
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(45, 90, 65, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-primary:hover {
+            background-color: #3e7a56;
+            transform: scale(1.05); /* 互动：缩放微动 */
+            box-shadow: 0 6px 18px rgba(45, 90, 65, 0.3);
+        }
+
+        /* --- F型布局 核心层 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 1. Header (F型的上横) */
+        header {
+            width: 100%;
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            background: rgba(240, 244, 240, 0.8);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(45, 90, 65, 0.05);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--retro-green-dark);
+            letter-spacing: -1px;
+        }
+
+        nav ul { display: flex; gap: 2rem; }
+        nav a { font-weight: 500; font-size: 0.95rem; color: var(--text-sub); }
+        nav a:hover, nav a.active { color: var(--retro-green-dark); font-weight: 600; }
+
+        /* 2. Main Content (F型的左竖和内容部分) */
+        main {
+            margin-top: 100px; /* 给Header留出空间 */
+            padding-bottom: 5rem;
+        }
+
+        /* Hero Section (F型的核心阅读起点) */
+        #hero {
+            padding: 6rem 0 4rem 0;
+            text-align: left; /* F型主视线靠左 */
+            max-width: 800px; /* 控制行长，提高高级感 */
+        }
+
+        #hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 0.8s ease-out; /* 进场动画：现代感 */
+        }
+
+        #hero h1 span { color: var(--retro-green-dark); }
+
+        #hero p {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
+        }
+
+        .hero-btns { animation: fadeInDown 0.8s ease-out 0.4s both; }
+
+        /* F布局 内容卡片区 */
+        .f-content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 左大右小，强化F型视线 */
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* 内容板块样式 */
+        .section-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--retro-green-light);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::before { content: ''; display: block; width: 20px; height: 2px; background-color: var(--retro-green-light); }
+
+        .card-main-title { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--retro-green-dark); }
+        .card-p { color: var(--text-sub); margin-bottom: 1.5rem; }
+
+        /* 技能标签 UI */
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-tag {
+            background: rgba(45, 90, 65, 0.05);
+            color: var(--retro-green-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+        .skill-tag:hover { background: rgba(45, 90, 65, 0.1); transform: scale(1.1); }
+
+        /* 动画定义 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 响应式适配 (手机端) */
+        @media (max-width: 768px) {
+            #hero h1 { font-size: 2.8rem; }
+            .f-content-grid { grid-template-columns: 1fr; }
+            nav ul { display: none; } /* 移动端暂时隐藏导航 */
+            .glass-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">FAynzz.NetSec</div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">主页</a></li>
+                    <li><a href="#about">关于</a></li>
+                    <li><a href="#ctf">CTF 战纪</a></li>
+                    <li><a href="#contact">联系</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section id="hero">
+            <div class="section-title">Hello, World!</div>
+            <h1>我是 <span>FAynzz</span></h1>
+            <p>一名来自东莞的网络与空间安全专业学子。热衷于 CTF 攻防对抗，潜心钻研 Three.js 交互式 Web 安全展示。在数字世界的边界，寻找最稳固的盾与最锋利的矛。</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn-primary">探索我的世界</a>
+                <a href="#about" style="margin-left: 20px; font-weight: 600; color: var(--retro-green-dark); border-bottom: 2px solid var(--retro-green-dark); padding-bottom: 4px;">了解更多 →</a>
+            </div>
+        </section>
+
+        <div class="f-content-grid">
+            
+            <article id="about" class="glass-card">
+                <div class="section-title">关于我</div>
+                <h2 class="card-main-title">不仅是代码，更是安全策略。</h2>
+                <p class="card-p">我目前攻读网络安全专业，致力于将深厚的底层的安全攻防技术与现代化的 Web 前端（如 Three.js）相结合，创造直观、炫酷的安全可视化体验。我相信，真正的安全不仅仅是修补漏洞，更是构建一个稳健的生态。</p>
+                <div class="skill-tags">
+                    <span class="skill-tag">Web 安全</span>
+                    <span class="skill-tag">CTF (Web/Misc)</span>
+                    <span class="skill-tag">Three.js</span>
+                    <span class="skill-tag">Linux 渗透</span>
+                    <span class="skill-tag">MediaPipe</span>
+                </div>
+            </article>
+
+            <aside id="ctf" class="glass-card">
+                <div class="section-title">项目 & 战绩</div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">CTFshow 刷题中</h3>
+                <p style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">正在攻克 HTTP 头注入专题，目标本周 10 题。</p>
+                <a href="#" class="btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">查看所有 WP</a>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <footer style="text-align: center; padding: 3rem 0; border-top: 1px solid rgba(45, 90, 65, 0.05); color: var(--text-sub); font-size: 0.9rem;">
+        <div class="container">
+            &copy; 2026 FAynzz. 保留所有权利。 | 建于 Vercel + GitHub
+        </div>
+    </footer>
+
+</body>
+</html>
