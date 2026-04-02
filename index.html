@@ -1,650 +1,1182 @@
-export default function GalaxyPortfolio() {
-  return <PortfolioPage />;
-}
-
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Mail,
-  MapPin,
-  GraduationCap,
-  Shield,
-  Code2,
-  Trophy,
-  Layers3,
-  Moon,
-  Sun,
-  ArrowUpRight,
-  ChevronDown,
-  Sparkles,
-  FileCode2,
-  BadgeCheck,
-  Blocks,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-
-function PortfolioPage() {
-  const [theme, setTheme] = useState("dark");
-  const [hoverPoint, setHoverPoint] = useState({ x: 50, y: 35 });
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("portfolio-theme") : null;
-    if (saved === "light" || saved === "dark") {
-      setTheme(saved);
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>李俊辉 | 个人主页</title>
+  <meta name="description" content="李俊辉的个人主页：网络安全、Web安全、安全开发、项目经历与联系方式。" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1024;
+      --bg-card: rgba(255, 255, 255, 0.08);
+      --bg-card-strong: rgba(255, 255, 255, 0.12);
+      --text: #f5f7ff;
+      --text-soft: rgba(245, 247, 255, 0.75);
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #89a6ff;
+      --accent-2: #dbe4ff;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+      --nav-bg: rgba(6, 10, 26, 0.45);
+      --grid: rgba(255, 255, 255, 0.05);
     }
-  }, []);
 
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", theme === "dark");
-      localStorage.setItem("portfolio-theme", theme);
+    body.light {
+      --bg: #eef3ff;
+      --bg-soft: #f8fbff;
+      --bg-card: rgba(255, 255, 255, 0.68);
+      --bg-card-strong: rgba(255, 255, 255, 0.82);
+      --text: #111827;
+      --text-soft: rgba(17, 24, 39, 0.72);
+      --line: rgba(17, 24, 39, 0.08);
+      --accent: #395cff;
+      --accent-2: #4f46e5;
+      --shadow: 0 18px 45px rgba(73, 92, 168, 0.12);
+      --nav-bg: rgba(255, 255, 255, 0.62);
+      --grid: rgba(17, 24, 39, 0.04);
     }
-  }, [theme]);
 
-  const content = useMemo(
-    () => ({
-      name: "李俊辉",
-      title: "网络安全 / Web安全 / 安全开发",
-      subtitle:
-        "广东科技学院网络空间安全本科生，聚焦 Web 漏洞攻防、代码审计与安全开发实践，也在持续补齐前端与个人品牌建设。",
-      location: "广东 · 东莞",
-      email: "16675970815@163.com",
-      intro:
-        "我希望把‘会挖洞’和‘懂修洞’结合起来：既能从攻击者视角复现漏洞链，也能从开发视角完成修复与加固，做更贴近真实业务的安全工作。",
-      highlights: [
-        "OWASP Top 10 实战与原理分析",
-        "PHP / MySQL 安全开发与加固",
-        "Burp Suite、Nmap、Sqlmap、Docker",
-        "Python 自动化脚本与 PoC 验证",
-      ],
-      about: [
-        "目前就读于广东科技学院网络空间安全专业，本科在读，学习过网络安全编程、代码审计、密码学、Linux、MySQL、数据结构等课程。",
-        "我偏好把知识放进项目里理解，因此会主动搭建靶场、复现漏洞、写技术复盘，也会站在开发者角度思考输入校验、鉴权、预编译和输出转义等加固逻辑。",
-        "除了安全方向，我也在持续建设个人网站与技术展示，希望形成更完整的作品集和更清晰的职业表达。",
-      ],
-      education: {
-        school: "广东科技学院",
-        degree: "网络空间安全 · 本科",
-        period: "2023.09 - 2027.06",
-        gpa: "GPA 3.05",
-        courses: ["网络安全编程", "代码审计", "信息安全数学", "MySQL数据库原理", "密码学", "Linux原理与应用", "数据结构"],
-      },
-      skills: [
-        {
-          group: "Web 安全",
-          items: ["SQL 注入", "XSS", "文件上传", "弱口令利用", "黑盒/白盒测试", "OWASP Top 10"],
-        },
-        {
-          group: "工具链",
-          items: ["Burp Suite", "Nmap", "Sqlmap", "Kali Linux", "Docker"],
-        },
-        {
-          group: "开发与代码",
-          items: ["PHP", "Python", "MySQL", "参数化查询", "Session鉴权", "HTML实体转义"],
-        },
-        {
-          group: "证书与能力",
-          items: ["NISP二级", "工信部信息安全证书", "CET-4", "技术文档撰写"],
-        },
-      ],
-      projects: [
-        {
-          title: "PHP 新闻管理系统开发与安全加固",
-          role: "全栈开发 / 安全自查",
-          period: "2025.11 - 2025.12",
-          points: [
-            "独立使用 PHP + MySQL 开发动态新闻管理系统，完成用户鉴权、内容发布与管理模块。",
-            "针对 SQL 注入风险采用 PDO 预编译，减少拼接查询带来的注入面。",
-            "针对 XSS 风险在前端输出环节落实 HTML 实体转义，提升页面展示安全性。",
-            "在后端引入基于 Session 的身份验证机制，修复潜在的越权访问问题，从开发视角完成安全改造。",
-          ],
-          tags: ["PHP", "MySQL", "安全开发", "鉴权设计"],
-        },
-        {
-          title: "Web 漏洞攻防演练与原理分析",
-          role: "独立研究 / 靶场复现",
-          period: "2025.12 - 至今",
-          points: [
-            "利用 Burp Suite 对弱口令接口进行字典爆破，理解认证薄弱点与流量特征。",
-            "围绕 SQL 注入手工构造联合查询与盲注 Payload，并结合工具进行自动化数据提取。",
-            "完整复现反射型与存储型 XSS 攻击链，分析 Cookie 获取与前后端交互过程。",
-            "从 PHP 源码层面拆解漏洞成因，整理攻击过程、修复思路与技术报告。",
-          ],
-          tags: ["Burp Suite", "SQLi", "XSS", "代码审计"],
-        },
-      ],
-      experience: [
-        {
-          title: "2025 湾区杯 & 羊城杯网络安全大赛（CTF）",
-          desc: "针对 Web 赛题进行攻关，使用 Burp Suite 分析请求流量，识别并利用 SQL 注入与文件上传漏洞，赛后进行 Writeup 复盘。",
-        },
-        {
-          title: "第十六届蓝桥杯大赛（Python组）",
-          desc: "通过算法训练夯实 Python 基础，提升脚本编写与自动化思维，为安全工具和 PoC 编写打底。",
-        },
-        {
-          title: "第十八届软件创新大赛 / 复兴杯",
-          desc: "作为技术成员参与项目实践，增强协作、表达与需求理解能力。",
-        },
-      ],
-      values: [
-        "既理解攻击链，也重视修复闭环",
-        "能把技术细节写成清晰文档",
-        "喜欢自己搭环境、自己复盘、自己总结",
-        "希望在安全实习中持续靠近真实业务场景",
-      ],
-      links: [
-        { label: "邮箱联系", href: "mailto:16675970815@163.com" },
-        { label: "GitHub", href: "https://github.com/your-github" },
-        { label: "博客 / 作品集", href: "#" },
-      ],
-    }),
-    []
-  );
+    * {
+      box-sizing: border-box;
+    }
 
-  const isDark = theme === "dark";
+    html {
+      scroll-behavior: smooth;
+    }
 
-  const onPointerMove = (e) => {
-    const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setHoverPoint({ x, y });
-  };
+    body {
+      margin: 0;
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(88, 114, 255, 0.22), transparent 22%),
+        radial-gradient(circle at 85% 18%, rgba(255, 255, 255, 0.12), transparent 14%),
+        radial-gradient(circle at 50% 100%, rgba(101, 31, 255, 0.22), transparent 30%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 38%, var(--bg) 100%);
+      min-height: 100vh;
+      transition: background 0.35s ease, color 0.35s ease;
+      overflow-x: hidden;
+    }
 
-  return (
-    <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen overflow-hidden bg-white text-zinc-900 transition-colors duration-500 dark:bg-[#050816] dark:text-zinc-100">
-        <BackgroundLayer theme={theme} hoverPoint={hoverPoint} />
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: -2;
+    }
 
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-white/40 backdrop-blur-xl supports-[backdrop-filter]:bg-white/35 dark:bg-black/15 dark:supports-[backdrop-filter]:bg-black/20">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-[0_8px_30px_rgba(255,255,255,0.08)] backdrop-blur-xl dark:bg-white/5">
-                <Shield className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-sm font-semibold tracking-[0.2em] text-zinc-700 dark:text-zinc-300">JUNHUI LI</div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">Portfolio / Cyber Security</div>
-              </div>
-            </div>
+    .cosmos {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: -1;
+    }
 
-            <nav className="hidden items-center gap-6 text-sm text-zinc-600 dark:text-zinc-300 md:flex">
-              {[
-                ["关于我", "about"],
-                ["技能", "skills"],
-                ["项目", "projects"],
-                ["经历", "experience"],
-                ["联系", "contact"],
-              ].map(([label, id]) => (
-                <a key={id} href={`#${id}`} className="transition hover:text-zinc-950 dark:hover:text-white">
-                  {label}
-                </a>
-              ))}
-            </nav>
+    .nebula {
+      position: absolute;
+      width: 34rem;
+      height: 34rem;
+      left: var(--mx, 50%);
+      top: var(--my, 30%);
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(130,150,255,0.12) 26%, rgba(130,150,255,0.03) 55%, transparent 72%);
+      filter: blur(32px);
+      transition: left 0.3s ease, top 0.3s ease, opacity 0.35s ease;
+      opacity: 0.9;
+    }
 
-            <Button
-              variant="outline"
-              className="rounded-2xl border-white/20 bg-white/40 backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
-              onClick={() => setTheme(isDark ? "light" : "dark")}
-            >
-              {isDark ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-              {isDark ? "日间模式" : "夜间模式"}
-            </Button>
-          </div>
-        </header>
+    body.light .nebula {
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(166,189,255,0.28) 28%, rgba(166,189,255,0.08) 54%, transparent 72%);
+      opacity: 0.85;
+    }
 
-        <main>
-          <section
-            ref={heroRef}
-            onPointerMove={onPointerMove}
-            className="relative mx-auto flex min-h-[92vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8"
-          >
-            <div className="grid w-full gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="relative"
-              >
-                <GlassCard className="p-6 sm:p-8 lg:p-10">
-                  <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs text-zinc-600 backdrop-blur-xl dark:text-zinc-300">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Web Security · Secure Coding · Portfolio 2026
-                  </div>
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 0 8px rgba(255,255,255,0.9);
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
 
-                  <div className="space-y-5">
-                    <div>
-                      <div className="mb-3 text-sm tracking-[0.35em] text-zinc-500 dark:text-zinc-400">HELLO, I’M</div>
-                      <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                        {content.name}
-                      </h1>
-                      <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-600 dark:text-zinc-300 sm:text-lg">
-                        {content.subtitle}
-                      </p>
-                    </div>
+    @keyframes twinkle {
+      0%, 100% { transform: scale(1); opacity: 0.24; }
+      50% { transform: scale(1.8); opacity: 1; }
+    }
 
-                    <div className="flex flex-wrap gap-3 text-sm text-zinc-600 dark:text-zinc-300">
-                      <MetaPill icon={<Shield className="h-4 w-4" />} text={content.title} />
-                      <MetaPill icon={<MapPin className="h-4 w-4" />} text={content.location} />
-                      <MetaPill icon={<Mail className="h-4 w-4" />} text={content.email} />
-                    </div>
+    .shooting-star {
+      position: absolute;
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95));
+      opacity: 0;
+      transform: rotate(-18deg);
+      animation: shooting 9s linear infinite;
+    }
 
-                    <p className="max-w-2xl text-base leading-7 text-zinc-700 dark:text-zinc-200">
-                      {content.intro}
-                    </p>
+    .shooting-star.one { top: 16%; left: 72%; animation-delay: 1s; }
+    .shooting-star.two { top: 42%; left: 80%; animation-delay: 5s; }
 
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {content.highlights.map((item) => (
-                        <Badge
-                          key={item}
-                          className="rounded-full border border-white/10 bg-white/40 px-3 py-1 text-xs text-zinc-700 backdrop-blur-xl hover:bg-white/50 dark:bg-white/10 dark:text-zinc-200"
-                        >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
+    @keyframes shooting {
+      0%, 86% { opacity: 0; transform: translate3d(0,0,0) rotate(-18deg); }
+      88% { opacity: 1; }
+      100% { opacity: 0; transform: translate3d(-220px, 120px, 0) rotate(-18deg); }
+    }
 
-                    <div className="flex flex-wrap gap-3 pt-4">
-                      <Button asChild className="rounded-2xl px-5">
-                        <a href="#projects">
-                          查看项目
-                          <ArrowUpRight className="ml-2 h-4 w-4" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="rounded-2xl border-white/20 bg-white/40 backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
-                      >
-                        <a href={`mailto:${content.email}`}>联系我</a>
-                      </Button>
-                    </div>
-                  </div>
-                </GlassCard>
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-                <motion.a
-                  href="#about"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                  className="mt-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
-                >
-                  向下查看完整内容
-                  <ChevronDown className="h-4 w-4 animate-bounce" />
-                </motion.a>
-              </motion.div>
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
 
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.15 }}
-                className="grid gap-5"
-              >
-                <GlassCard className="p-5 sm:p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">核心画像</h3>
-                    <Blocks className="h-5 w-5 text-zinc-500" />
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      ["方向", "Web安全 / 安全开发"],
-                      ["定位", "网络安全实习生"],
-                      ["风格", "能复现，也能修复"],
-                      ["特色", "技术复盘 + 文档表达"],
-                    ].map(([k, v]) => (
-                      <div key={k} className="rounded-2xl border border-white/10 bg-white/25 p-4 dark:bg-white/5">
-                        <div className="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">{k}</div>
-                        <div className="mt-2 text-sm font-medium text-zinc-800 dark:text-zinc-100">{v}</div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
+    .glass {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-radius: 28px;
+    }
 
-                <GlassCard className="p-5 sm:p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">能力标签</h3>
-                    <Code2 className="h-5 w-5 text-zinc-500" />
-                  </div>
-                  <div className="space-y-3">
-                    {content.values.map((item, idx) => (
-                      <motion.div
-                        key={item}
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.15 * idx + 0.2 }}
-                        className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                      >
-                        {item}
-                      </motion.div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-          </section>
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
 
-          <div className="mx-auto max-w-7xl space-y-6 px-4 pb-20 sm:px-6 lg:px-8">
-            <Section id="about" title="关于我" icon={<Sparkles className="h-5 w-5" />}>
-              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="space-y-4 text-sm leading-7 text-zinc-700 dark:text-zinc-200 sm:text-base">
-                    {content.about.map((paragraph) => (
-                      <p key={paragraph}>{paragraph}</p>
-                    ))}
-                  </div>
-                </GlassCard>
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="mb-4 flex items-center gap-3">
-                    <GraduationCap className="h-5 w-5 text-zinc-500" />
-                    <h3 className="text-lg font-semibold">教育信息</h3>
-                  </div>
-                  <div className="space-y-4 text-sm text-zinc-700 dark:text-zinc-200">
-                    <InfoRow label="学校" value={content.education.school} />
-                    <InfoRow label="专业" value={content.education.degree} />
-                    <InfoRow label="时间" value={content.education.period} />
-                    <InfoRow label="成绩" value={content.education.gpa} />
-                    <div>
-                      <div className="mb-2 text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">核心课程</div>
-                      <div className="flex flex-wrap gap-2">
-                        {content.education.courses.map((course) => (
-                          <Badge
-                            key={course}
-                            className="rounded-full border border-white/10 bg-white/35 px-3 py-1 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                          >
-                            {course}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 76px;
+    }
 
-            <Section id="skills" title="相关技能" icon={<Code2 className="h-5 w-5" />}>
-              <div className="grid gap-5 md:grid-cols-2">
-                {content.skills.map((skill) => (
-                  <GlassCard key={skill.group} className="p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{skill.group}</h3>
-                      <BadgeCheck className="h-5 w-5 text-zinc-500" />
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.items.map((item) => (
-                        <Badge
-                          key={item}
-                          className="rounded-full border border-white/10 bg-white/35 px-3 py-1.5 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                        >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Section>
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-            <Section id="projects" title="项目经历" icon={<FileCode2 className="h-5 w-5" />}>
-              <div className="grid gap-5">
-                {content.projects.map((project, index) => (
-                  <motion.div
-                    key={project.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.45, delay: index * 0.08 }}
-                  >
-                    <GlassCard className="p-6 sm:p-7">
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div>
-                          <div className="text-xs uppercase tracking-[0.25em] text-zinc-500 dark:text-zinc-400">
-                            {project.period}
-                          </div>
-                          <h3 className="mt-2 text-xl font-semibold">{project.title}</h3>
-                          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{project.role}</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <Badge
-                              key={tag}
-                              className="rounded-full border border-white/10 bg-white/35 px-3 py-1 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="mt-5 grid gap-3">
-                        {project.points.map((point) => (
-                          <div
-                            key={point}
-                            className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                          >
-                            {point}
-                          </div>
-                        ))}
-                      </div>
-                    </GlassCard>
-                  </motion.div>
-                ))}
-              </div>
-            </Section>
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--bg-card-strong);
+      border: 1px solid var(--line);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
 
-            <Section id="experience" title="竞赛与经历" icon={<Trophy className="h-5 w-5" />}>
-              <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-                <GlassCard className="p-6">
-                  <div className="space-y-4">
-                    {content.experience.map((item) => (
-                      <div key={item.title} className="rounded-2xl border border-white/10 bg-white/25 p-4 dark:bg-white/5">
-                        <div className="text-base font-semibold">{item.title}</div>
-                        <p className="mt-2 text-sm leading-6 text-zinc-700 dark:text-zinc-200">{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
+    .brand-title {
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+    }
 
-                <GlassCard className="p-6">
-                  <div className="mb-4 text-lg font-semibold">你会在这个网站里看到什么</div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      "银河背景和轻量星光交互",
-                      "一键日间 / 夜间模式切换",
-                      "移动端与 PC 自适应布局",
-                      "模糊玻璃卡片与层次化信息",
-                      "细节过渡动画但不过度炫技",
-                      "适合作为 GitHub 主页或个人作品站",
-                    ].map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
 
-            <Section id="contact" title="联系与链接" icon={<Mail className="h-5 w-5" />}>
-              <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="space-y-4">
-                    <InfoRow label="邮箱" value={content.email} />
-                    <InfoRow label="城市" value={content.location} />
-                    <InfoRow label="方向" value="网络安全实习 / Web安全 / 安全开发" />
-                    <p className="pt-2 text-sm leading-7 text-zinc-700 dark:text-zinc-200">
-                      这版主页刻意保持克制：有氛围、有细节、有交互，但不会让访客被特效分散注意力。
-                      重点还是把你的能力、项目与成长路径讲清楚。
-                    </p>
-                  </div>
-                </GlassCard>
+    .nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
 
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="mb-4 text-lg font-semibold">外部链接</div>
-                  <div className="grid gap-3">
-                    {content.links.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        className="group rounded-2xl border border-white/10 bg-white/25 p-4 transition hover:translate-y-[-2px] hover:bg-white/35 dark:bg-white/5 dark:hover:bg-white/10"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <div className="text-sm font-medium">{link.label}</div>
-                            <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">点击跳转</div>
-                          </div>
-                          <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
+    .nav a {
+      position: relative;
+      transition: color 0.25s ease;
+    }
 
-function Section({ id, title, icon, children }) {
-  return (
-    <section id={id} className="scroll-mt-28">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/25 backdrop-blur-xl dark:bg-white/5">
-          {icon}
-        </div>
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      transition: width 0.25s ease;
+    }
+
+    .nav a:hover {
+      color: var(--text);
+    }
+
+    .nav a:hover::after {
+      width: 100%;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toggle {
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform 0.2s ease, background 0.25s ease;
+    }
+
+    .toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      padding: 54px 0 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-main,
+    .hero-side,
+    .section-card,
+    .timeline-item,
+    .link-card,
+    .skill-card {
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .hero-main:hover,
+    .hero-side:hover,
+    .section-card:hover,
+    .timeline-item:hover,
+    .link-card:hover,
+    .skill-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(137, 166, 255, 0.34);
+    }
+
+    .hero-main {
+      padding: 32px;
+      min-height: 100%;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      color: var(--text-soft);
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(36px, 8vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-subtitle {
+      margin: 18px 0 0;
+      max-width: 780px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-soft);
+    }
+
+    .meta-list,
+    .tag-list,
+    .badge-list,
+    .course-list,
+    .project-tags,
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-pill,
+    .tag,
+    .skill-tag,
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .hero-intro {
+      margin: 22px 0 0;
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text);
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 16px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform 0.2s ease, opacity 0.25s ease, background 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22);
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      color: var(--text);
+    }
+
+    .scroll-tip {
+      margin-top: 20px;
+      display: inline-flex;
+      gap: 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .side-panel {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    body.light .side-panel {
+      background: rgba(255,255,255,0.45);
+    }
+
+    .side-panel h3 {
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card,
+    .value-item,
+    .project-point,
+    .exp-item,
+    .overview-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    body.light .mini-card,
+    body.light .value-item,
+    body.light .project-point,
+    body.light .exp-item,
+    body.light .overview-item {
+      background: rgba(255,255,255,0.44);
+    }
+
+    .mini-card .k {
+      font-size: 12px;
+      color: var(--text-soft);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .mini-card .v {
+      margin-top: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+
+    .value-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .value-item {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    main {
+      padding-bottom: 80px;
+    }
+
+    section {
+      padding-top: 24px;
+      scroll-margin-top: 92px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .section-title .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      font-size: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(24px, 5vw, 32px);
+    }
+
+    .section-title .line {
+      width: 64px;
+      height: 1px;
+      margin-top: 8px;
+      background: var(--line);
+    }
+
+    .two-col {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .section-card {
+      padding: 24px;
+    }
+
+    .section-card p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      line-height: 1.95;
+      color: var(--text-soft);
+    }
+
+    .info-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-row .label {
+      color: var(--text-soft);
+      flex-shrink: 0;
+    }
+
+    .info-row .value {
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .skill-grid,
+    .projects,
+    .overview-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .skill-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .skill-card {
+      padding: 22px;
+    }
+
+    .skill-card h3,
+    .project-head h3,
+    .section-card h3 {
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+
+    .project-card {
+      padding: 24px;
+    }
+
+    .project-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .project-time {
+      font-size: 12px;
+      color: var(--text-soft);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .project-role {
+      color: var(--text-soft);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .project-points {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .project-point {
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .exp-layout {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+
+    .exp-list,
+    .overview-grid,
+    .link-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .exp-item,
+    .overview-item,
+    .link-card {
+      padding: 18px;
+    }
+
+    .exp-item h4,
+    .link-card h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .exp-item p,
+    .overview-item,
+    .link-card p,
+    .contact-text {
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-soft);
+    }
+
+    .link-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    body.light .link-card {
+      background: rgba(255,255,255,0.44);
+    }
+
+    .link-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(137, 166, 255, 0.36);
+    }
+
+    .arrow {
+      font-size: 18px;
+      opacity: 0.7;
+      transition: transform 0.25s ease;
+    }
+
+    .link-card:hover .arrow {
+      transform: translate(2px, -2px);
+    }
+
+    footer {
+      padding: 20px 0 60px;
+      color: var(--text-soft);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      border: 1px solid var(--line);
+      background: var(--bg-card-strong);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .two-col,
+      .skill-grid,
+      .exp-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 16px;
+        right: 16px;
+        padding: 14px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: var(--nav-bg);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .nav.show {
+        display: flex;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .topbar-inner {
+        position: relative;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .wrap {
+        width: min(100% - 20px, 1180px);
+      }
+
+      .hero {
+        padding-top: 24px;
+      }
+
+      .hero-main,
+      .hero-side,
+      .section-card,
+      .project-card,
+      .skill-card {
+        padding: 18px;
+      }
+
+      .hero-subtitle {
+        font-size: 16px;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-row {
+        flex-direction: column;
+      }
+
+      .info-row .value {
+        text-align: left;
+      }
+
+      .actions {
+        gap: 8px;
+      }
+
+      .toggle {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmos" aria-hidden="true">
+    <div class="nebula"></div>
+    <div class="shooting-star one"></div>
+    <div class="shooting-star two"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">🛡️</div>
         <div>
-          <h2 className="text-2xl font-semibold sm:text-3xl">{title}</h2>
-          <div className="mt-1 h-px w-16 bg-zinc-300 dark:bg-white/20" />
+          <div class="brand-title">JUNHUI LI</div>
+          <div class="brand-sub">Portfolio / Cyber Security</div>
         </div>
       </div>
-      {children}
+
+      <nav class="nav" id="navMenu">
+        <a href="#about">关于我</a>
+        <a href="#skills">技能</a>
+        <a href="#projects">项目</a>
+        <a href="#experience">经历</a>
+        <a href="#contact">联系</a>
+      </nav>
+
+      <div class="actions">
+        <button class="toggle" id="themeToggle" type="button">🌙 夜间模式</button>
+        <button class="mobile-nav-toggle" id="navToggle" type="button">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-grid">
+        <div class="glass hero-main">
+          <div class="eyebrow">✨ Web Security · Secure Coding · Portfolio 2026</div>
+          <h1>李俊辉</h1>
+          <p class="hero-subtitle">
+            广东科技学院网络空间安全本科生，聚焦 Web 漏洞攻防、代码审计与安全开发实践，也在持续补齐前端与个人品牌建设。
+          </p>
+
+          <div class="meta-list" style="margin-top: 18px;">
+            <div class="meta-pill">🛡️ 网络安全 / Web安全 / 安全开发</div>
+            <div class="meta-pill">📍 广东 · 东莞</div>
+            <div class="meta-pill">✉️ 16675970815@163.com</div>
+          </div>
+
+          <p class="hero-intro">
+            我希望把“会挖洞”和“懂修洞”结合起来：既能从攻击者视角复现漏洞链，也能从开发视角完成修复与加固，做更贴近真实业务的安全工作。
+          </p>
+
+          <div class="tag-list" style="margin-top: 18px;">
+            <div class="tag">OWASP Top 10 实战与原理分析</div>
+            <div class="tag">PHP / MySQL 安全开发与加固</div>
+            <div class="tag">Burp Suite、Nmap、Sqlmap、Docker</div>
+            <div class="tag">Python 自动化脚本与 PoC 验证</div>
+          </div>
+
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="#projects">查看项目 →</a>
+            <a class="btn btn-secondary" href="mailto:16675970815@163.com">联系我</a>
+          </div>
+
+          <div class="scroll-tip">↓ 向下查看完整内容</div>
+        </div>
+
+        <div class="glass hero-side">
+          <div class="side-panel">
+            <h3>核心画像</h3>
+            <div class="mini-grid">
+              <div class="mini-card">
+                <div class="k">方向</div>
+                <div class="v">Web安全 / 安全开发</div>
+              </div>
+              <div class="mini-card">
+                <div class="k">定位</div>
+                <div class="v">网络安全实习生</div>
+              </div>
+              <div class="mini-card">
+                <div class="k">风格</div>
+                <div class="v">能复现，也能修复</div>
+              </div>
+              <div class="mini-card">
+                <div class="k">特色</div>
+                <div class="v">技术复盘 + 文档表达</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <h3>能力标签</h3>
+            <div class="value-list">
+              <div class="value-item">既理解攻击链，也重视修复闭环</div>
+              <div class="value-item">能把技术细节写成清晰文档</div>
+              <div class="value-item">喜欢自己搭环境、自己复盘、自己总结</div>
+              <div class="value-item">希望在安全实习中持续靠近真实业务场景</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-  );
-}
 
-function GlassCard({ className = "", children }) {
-  return (
-    <Card className={`overflow-hidden rounded-[28px] border border-white/10 bg-white/35 shadow-[0_10px_50px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:bg-white/5 dark:shadow-[0_10px_60px_rgba(0,0,0,0.35)] ${className}`}>
-      <CardContent className="p-0">{children}</CardContent>
-    </Card>
-  );
-}
+    <section id="about" class="wrap">
+      <div class="section-title">
+        <div class="icon">✨</div>
+        <div>
+          <h2>关于我</h2>
+          <div class="line"></div>
+        </div>
+      </div>
 
-function InfoRow({ label, value }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-3 text-sm last:border-none last:pb-0">
-      <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{label}</span>
-      <span className="text-right text-zinc-800 dark:text-zinc-100">{value}</span>
-    </div>
-  );
-}
+      <div class="two-col">
+        <div class="glass section-card">
+          <p>目前就读于广东科技学院网络空间安全专业，本科在读，学习过网络安全编程、代码审计、密码学、Linux、MySQL、数据结构等课程。</p>
+          <p>我偏好把知识放进项目里理解，因此会主动搭建靶场、复现漏洞、写技术复盘，也会站在开发者角度思考输入校验、鉴权、预编译和输出转义等加固逻辑。</p>
+          <p>除了安全方向，我也在持续建设个人网站与技术展示，希望形成更完整的作品集和更清晰的职业表达。</p>
+        </div>
 
-function MetaPill({ icon, text }) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/35 px-3 py-2 backdrop-blur-xl dark:bg-white/10">
-      {icon}
-      <span>{text}</span>
-    </div>
-  );
-}
+        <div class="glass section-card">
+          <h3>教育信息</h3>
+          <div class="info-list">
+            <div class="info-row"><span class="label">学校</span><span class="value">广东科技学院</span></div>
+            <div class="info-row"><span class="label">专业</span><span class="value">网络空间安全 · 本科</span></div>
+            <div class="info-row"><span class="label">时间</span><span class="value">2023.09 - 2027.06</span></div>
+            <div class="info-row"><span class="label">成绩</span><span class="value">GPA 3.05</span></div>
+          </div>
+          <h3 style="margin-top: 20px;">核心课程</h3>
+          <div class="course-list">
+            <div class="course-tag">网络安全编程</div>
+            <div class="course-tag">代码审计</div>
+            <div class="course-tag">信息安全数学</div>
+            <div class="course-tag">MySQL数据库原理</div>
+            <div class="course-tag">密码学</div>
+            <div class="course-tag">Linux原理与应用</div>
+            <div class="course-tag">数据结构</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-function BackgroundLayer({ theme, hoverPoint }) {
-  const stars = Array.from({ length: 44 }, (_, i) => ({
-    id: i,
-    top: `${(i * 17) % 100}%`,
-    left: `${(i * 13 + 7) % 100}%`,
-    size: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1.5,
-    delay: `${(i % 9) * 0.4}s`,
-    duration: `${3 + (i % 5)}s`,
-  }));
+    <section id="skills" class="wrap">
+      <div class="section-title">
+        <div class="icon">💻</div>
+        <div>
+          <h2>相关技能</h2>
+          <div class="line"></div>
+        </div>
+      </div>
 
-  return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <AnimatePresence mode="wait">
-        {theme === "dark" ? (
-          <motion.div
-            key="dark-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(72,102,255,0.16),_transparent_32%),radial-gradient(circle_at_80%_20%,_rgba(255,255,255,0.10),_transparent_18%),radial-gradient(circle_at_bottom,_rgba(113,33,255,0.18),_transparent_28%),linear-gradient(180deg,_#060816_0%,_#04050d_45%,_#020308_100%)]" />
-            <motion.div
-              className="absolute h-[36rem] w-[36rem] rounded-full bg-white/10 blur-[120px]"
-              animate={{ x: `${hoverPoint.x - 45}%`, y: `${hoverPoint.y - 35}%` }}
-              transition={{ type: "spring", damping: 22, stiffness: 80 }}
-            />
-            {stars.map((star) => (
-              <motion.span
-                key={star.id}
-                className="absolute rounded-full bg-white"
-                style={{
-                  top: star.top,
-                  left: star.left,
-                  width: star.size,
-                  height: star.size,
-                  boxShadow: "0 0 12px rgba(255,255,255,0.85)",
-                }}
-                animate={{ opacity: [0.25, 1, 0.35], scale: [1, 1.6, 1] }}
-                transition={{
-                  duration: parseFloat(star.duration),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: parseFloat(star.delay),
-                }}
-              />
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="light-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(244,247,255,0.92)_32%,_rgba(232,238,250,0.95)_100%),radial-gradient(circle_at_15%_20%,_rgba(120,140,255,0.10),_transparent_18%),radial-gradient(circle_at_85%_22%,_rgba(255,255,255,0.85),_transparent_14%),linear-gradient(180deg,_#f7f9ff_0%,_#eef3ff_45%,_#e8eef8_100%)]" />
-            <motion.div
-              className="absolute h-[30rem] w-[30rem] rounded-full bg-white/70 blur-[120px]"
-              animate={{ x: `${hoverPoint.x - 40}%`, y: `${hoverPoint.y - 28}%` }}
-              transition={{ type: "spring", damping: 24, stiffness: 70 }}
-            />
-            {stars.slice(0, 20).map((star) => (
-              <motion.span
-                key={star.id}
-                className="absolute rounded-full bg-white/90"
-                style={{
-                  top: star.top,
-                  left: star.left,
-                  width: star.size,
-                  height: star.size,
-                  boxShadow: "0 0 10px rgba(255,255,255,0.9)",
-                }}
-                animate={{ opacity: [0.18, 0.6, 0.2] }}
-                transition={{
-                  duration: parseFloat(star.duration) + 1,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: parseFloat(star.delay),
-                }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div class="skill-grid">
+        <div class="glass skill-card">
+          <h3>Web 安全</h3>
+          <div class="skill-tags">
+            <div class="skill-tag">SQL 注入</div>
+            <div class="skill-tag">XSS</div>
+            <div class="skill-tag">文件上传</div>
+            <div class="skill-tag">弱口令利用</div>
+            <div class="skill-tag">黑盒/白盒测试</div>
+            <div class="skill-tag">OWASP Top 10</div>
+          </div>
+        </div>
 
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-[0.08] dark:opacity-[0.06]" />
-    </div>
-  );
-}
+        <div class="glass skill-card">
+          <h3>工具链</h3>
+          <div class="skill-tags">
+            <div class="skill-tag">Burp Suite</div>
+            <div class="skill-tag">Nmap</div>
+            <div class="skill-tag">Sqlmap</div>
+            <div class="skill-tag">Kali Linux</div>
+            <div class="skill-tag">Docker</div>
+          </div>
+        </div>
+
+        <div class="glass skill-card">
+          <h3>开发与代码</h3>
+          <div class="skill-tags">
+            <div class="skill-tag">PHP</div>
+            <div class="skill-tag">Python</div>
+            <div class="skill-tag">MySQL</div>
+            <div class="skill-tag">参数化查询</div>
+            <div class="skill-tag">Session鉴权</div>
+            <div class="skill-tag">HTML实体转义</div>
+          </div>
+        </div>
+
+        <div class="glass skill-card">
+          <h3>证书与能力</h3>
+          <div class="skill-tags">
+            <div class="skill-tag">NISP二级</div>
+            <div class="skill-tag">工信部信息安全证书</div>
+            <div class="skill-tag">CET-4</div>
+            <div class="skill-tag">技术文档撰写</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="wrap">
+      <div class="section-title">
+        <div class="icon">🧩</div>
+        <div>
+          <h2>项目经历</h2>
+          <div class="line"></div>
+        </div>
+      </div>
+
+      <div class="projects">
+        <div class="glass project-card">
+          <div class="project-head">
+            <div>
+              <div class="project-time">2025.11 - 2025.12</div>
+              <h3>PHP 新闻管理系统开发与安全加固</h3>
+              <div class="project-role">全栈开发 / 安全自查</div>
+            </div>
+            <div class="project-tags badge-list">
+              <div class="tag">PHP</div>
+              <div class="tag">MySQL</div>
+              <div class="tag">安全开发</div>
+              <div class="tag">鉴权设计</div>
+            </div>
+          </div>
+          <div class="project-points">
+            <div class="project-point">独立使用 PHP + MySQL 开发动态新闻管理系统，完成用户鉴权、内容发布与管理模块。</div>
+            <div class="project-point">针对 SQL 注入风险采用 PDO 预编译，减少拼接查询带来的注入面。</div>
+            <div class="project-point">针对 XSS 风险在前端输出环节落实 HTML 实体转义，提升页面展示安全性。</div>
+            <div class="project-point">在后端引入基于 Session 的身份验证机制，修复潜在的越权访问问题，从开发视角完成安全改造。</div>
+          </div>
+        </div>
+
+        <div class="glass project-card">
+          <div class="project-head">
+            <div>
+              <div class="project-time">2025.12 - 至今</div>
+              <h3>Web 漏洞攻防演练与原理分析</h3>
+              <div class="project-role">独立研究 / 靶场复现</div>
+            </div>
+            <div class="project-tags badge-list">
+              <div class="tag">Burp Suite</div>
+              <div class="tag">SQLi</div>
+              <div class="tag">XSS</div>
+              <div class="tag">代码审计</div>
+            </div>
+          </div>
+          <div class="project-points">
+            <div class="project-point">利用 Burp Suite 对弱口令接口进行字典爆破，理解认证薄弱点与流量特征。</div>
+            <div class="project-point">围绕 SQL 注入手工构造联合查询与盲注 Payload，并结合工具进行自动化数据提取。</div>
+            <div class="project-point">完整复现反射型与存储型 XSS 攻击链，分析 Cookie 获取与前后端交互过程。</div>
+            <div class="project-point">从 PHP 源码层面拆解漏洞成因，整理攻击过程、修复思路与技术报告。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="wrap">
+      <div class="section-title">
+        <div class="icon">🏆</div>
+        <div>
+          <h2>竞赛与经历</h2>
+          <div class="line"></div>
+        </div>
+      </div>
+
+      <div class="exp-layout">
+        <div class="glass section-card">
+          <div class="exp-list">
+            <div class="exp-item">
+              <h4>2025 湾区杯 & 羊城杯网络安全大赛（CTF）</h4>
+              <p>针对 Web 赛题进行攻关，使用 Burp Suite 分析请求流量，识别并利用 SQL 注入与文件上传漏洞，赛后进行 Writeup 复盘。</p>
+            </div>
+            <div class="exp-item">
+              <h4>第十六届蓝桥杯大赛（Python组）</h4>
+              <p>通过算法训练夯实 Python 基础，提升脚本编写与自动化思维，为安全工具和 PoC 编写打底。</p>
+            </div>
+            <div class="exp-item">
+              <h4>第十八届软件创新大赛 / 复兴杯</h4>
+              <p>作为技术成员参与项目实践，增强协作、表达与需求理解能力。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass section-card">
+          <h3>这版网站包含的效果</h3>
+          <div class="overview-grid">
+            <div class="overview-item">银河背景和轻量星光交互</div>
+            <div class="overview-item">一键日间 / 夜间模式切换</div>
+            <div class="overview-item">移动端与 PC 自适应布局</div>
+            <div class="overview-item">模糊玻璃卡片与层次化信息</div>
+            <div class="overview-item">细节过渡动画但不过度炫技</div>
+            <div class="overview-item">适合作为 GitHub 主页或个人作品站</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="wrap">
+      <div class="section-title">
+        <div class="icon">✉️</div>
+        <div>
+          <h2>联系与链接</h2>
+          <div class="line"></div>
+        </div>
+      </div>
+
+      <div class="exp-layout">
+        <div class="glass section-card">
+          <div class="info-list">
+            <div class="info-row"><span class="label">邮箱</span><span class="value">16675970815@163.com</span></div>
+            <div class="info-row"><span class="label">城市</span><span class="value">广东 · 东莞</span></div>
+            <div class="info-row"><span class="label">方向</span><span class="value">网络安全实习 / Web安全 / 安全开发</span></div>
+          </div>
+          <p class="contact-text">这版主页刻意保持克制：有氛围、有细节、有交互，但不会让访客被特效分散注意力。重点仍然是把你的能力、项目与成长路径讲清楚。</p>
+        </div>
+
+        <div class="glass section-card">
+          <h3>外部链接</h3>
+          <div class="link-list">
+            <a class="link-card" href="mailto:16675970815@163.com">
+              <div>
+                <h4>邮箱联系</h4>
+                <p>点击直接发送邮件</p>
+              </div>
+              <div class="arrow">↗</div>
+            </a>
+            <a class="link-card" href="https://github.com/yh210227-design" target="_blank" rel="noreferrer">
+              <div>
+                <h4>GitHub</h4>
+                <p>查看代码仓库与个人主页</p>
+              </div>
+              <div class="arrow">↗</div>
+            </a>
+            <a class="link-card" href="#">
+              <div>
+                <h4>博客 / 作品集</h4>
+                <p>这里后续可以换成你的博客或项目展示链接</p>
+              </div>
+              <div class="arrow">↗</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    © 2026 李俊辉 · Personal Portfolio
+  </footer>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const cosmos = document.querySelector('.cosmos');
+    const savedTheme = localStorage.getItem('portfolio-theme');
+
+    if (savedTheme === 'light') {
+      body.classList.add('light');
+      themeToggle.textContent = '☀️ 日间模式';
+    }
+
+    function updateThemeButton() {
+      themeToggle.textContent = body.classList.contains('light') ? '☀️ 日间模式' : '🌙 夜间模式';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light');
+      localStorage.setItem('portfolio-theme', body.classList.contains('light') ? 'light' : 'dark');
+      updateThemeButton();
+    });
+
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+    });
+
+    document.querySelectorAll('.nav a').forEach(link => {
+      link.addEventListener('click', () => navMenu.classList.remove('show'));
+    });
+
+    function createStars() {
+      const total = window.innerWidth < 768 ? 36 : 58;
+      for (let i = 0; i < total; i++) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        const size = Math.random() > 0.82 ? 3 : Math.random() > 0.55 ? 2 : 1.5;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.setProperty('--duration', (3 + Math.random() * 4).toFixed(2) + 's');
+        star.style.setProperty('--delay', (Math.random() * 4).toFixed(2) + 's');
+        cosmos.appendChild(star);
+      }
+    }
+
+    createStars();
+
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--mx', x + '%');
+      document.documentElement.style.setProperty('--my', y + '%');
+    });
+  </script>
+</body>
+</html>
