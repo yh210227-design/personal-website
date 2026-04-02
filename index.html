@@ -1,650 +1,302 @@
-export default function GalaxyPortfolio() {
-  return <PortfolioPage />;
-}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李俊辉 | 网络安全与空间档案</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- 核心变量 --- */
+        :root {
+            --bg-deep: #050507;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f0f2;
+            --text-sub: #8a8a93;
+            --accent-white: #ffffff;
+            --accent-green: #00ff66;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --font-sys: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Mail,
-  MapPin,
-  GraduationCap,
-  Shield,
-  Code2,
-  Trophy,
-  Layers3,
-  Moon,
-  Sun,
-  ArrowUpRight,
-  ChevronDown,
-  Sparkles,
-  FileCode2,
-  BadgeCheck,
-  Blocks,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+        /* --- 基础设置 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sys);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-function PortfolioPage() {
-  const [theme, setTheme] = useState("dark");
-  const [hoverPoint, setHoverPoint] = useState({ x: 50, y: 35 });
-  const heroRef = useRef(null);
+        /* --- Three.js 背景层 --- */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
 
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("portfolio-theme") : null;
-    if (saved === "light" || saved === "dark") {
-      setTheme(saved);
-    }
-  }, []);
+        /* --- 自定义“星子”光标 --- */
+        #custom-cursor {
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 10000;
+            mix-blend-mode: difference; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s; box-shadow: 0 0 10px #fff;
+        }
 
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", theme === "dark");
-      localStorage.setItem("portfolio-theme", theme);
-    }
-  }, [theme]);
+        /* --- 导航栏 --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.03); z-index: 100;
+            display: flex; justify-content: center; align-items: center; gap: 30px;
+        }
+        nav a { color: var(--text-sub); text-decoration: none; font-size: 13px; transition: var(--transition); }
+        nav a:hover { color: var(--text-main); text-shadow: 0 0 5px #fff; }
 
-  const content = useMemo(
-    () => ({
-      name: "李俊辉",
-      title: "网络安全 / Web安全 / 安全开发",
-      subtitle:
-        "广东科技学院网络空间安全本科生，聚焦 Web 漏洞攻防、代码审计与安全开发实践，也在持续补齐前端与个人品牌建设。",
-      location: "广东 · 东莞",
-      email: "16675970815@163.com",
-      intro:
-        "我希望把‘会挖洞’和‘懂修洞’结合起来：既能从攻击者视角复现漏洞链，也能从开发视角完成修复与加固，做更贴近真实业务的安全工作。",
-      highlights: [
-        "OWASP Top 10 实战与原理分析",
-        "PHP / MySQL 安全开发与加固",
-        "Burp Suite、Nmap、Sqlmap、Docker",
-        "Python 自动化脚本与 PoC 验证",
-      ],
-      about: [
-        "目前就读于广东科技学院网络空间安全专业，本科在读，学习过网络安全编程、代码审计、密码学、Linux、MySQL、数据结构等课程。",
-        "我偏好把知识放进项目里理解，因此会主动搭建靶场、复现漏洞、写技术复盘，也会站在开发者角度思考输入校验、鉴权、预编译和输出转义等加固逻辑。",
-        "除了安全方向，我也在持续建设个人网站与技术展示，希望形成更完整的作品集和更清晰的职业表达。",
-      ],
-      education: {
-        school: "广东科技学院",
-        degree: "网络空间安全 · 本科",
-        period: "2023.09 - 2027.06",
-        gpa: "GPA 3.05",
-        courses: ["网络安全编程", "代码审计", "信息安全数学", "MySQL数据库原理", "密码学", "Linux原理与应用", "数据结构"],
-      },
-      skills: [
-        {
-          group: "Web 安全",
-          items: ["SQL 注入", "XSS", "文件上传", "弱口令利用", "黑盒/白盒测试", "OWASP Top 10"],
-        },
-        {
-          group: "工具链",
-          items: ["Burp Suite", "Nmap", "Sqlmap", "Kali Linux", "Docker"],
-        },
-        {
-          group: "开发与代码",
-          items: ["PHP", "Python", "MySQL", "参数化查询", "Session鉴权", "HTML实体转义"],
-        },
-        {
-          group: "证书与能力",
-          items: ["NISP二级", "工信部信息安全证书", "CET-4", "技术文档撰写"],
-        },
-      ],
-      projects: [
-        {
-          title: "PHP 新闻管理系统开发与安全加固",
-          role: "全栈开发 / 安全自查",
-          period: "2025.11 - 2025.12",
-          points: [
-            "独立使用 PHP + MySQL 开发动态新闻管理系统，完成用户鉴权、内容发布与管理模块。",
-            "针对 SQL 注入风险采用 PDO 预编译，减少拼接查询带来的注入面。",
-            "针对 XSS 风险在前端输出环节落实 HTML 实体转义，提升页面展示安全性。",
-            "在后端引入基于 Session 的身份验证机制，修复潜在的越权访问问题，从开发视角完成安全改造。",
-          ],
-          tags: ["PHP", "MySQL", "安全开发", "鉴权设计"],
-        },
-        {
-          title: "Web 漏洞攻防演练与原理分析",
-          role: "独立研究 / 靶场复现",
-          period: "2025.12 - 至今",
-          points: [
-            "利用 Burp Suite 对弱口令接口进行字典爆破，理解认证薄弱点与流量特征。",
-            "围绕 SQL 注入手工构造联合查询与盲注 Payload，并结合工具进行自动化数据提取。",
-            "完整复现反射型与存储型 XSS 攻击链，分析 Cookie 获取与前后端交互过程。",
-            "从 PHP 源码层面拆解漏洞成因，整理攻击过程、修复思路与技术报告。",
-          ],
-          tags: ["Burp Suite", "SQLi", "XSS", "代码审计"],
-        },
-      ],
-      experience: [
-        {
-          title: "2025 湾区杯 & 羊城杯网络安全大赛（CTF）",
-          desc: "针对 Web 赛题进行攻关，使用 Burp Suite 分析请求流量，识别并利用 SQL 注入与文件上传漏洞，赛后进行 Writeup 复盘。",
-        },
-        {
-          title: "第十六届蓝桥杯大赛（Python组）",
-          desc: "通过算法训练夯实 Python 基础，提升脚本编写与自动化思维，为安全工具和 PoC 编写打底。",
-        },
-        {
-          title: "第十八届软件创新大赛 / 复兴杯",
-          desc: "作为技术成员参与项目实践，增强协作、表达与需求理解能力。",
-        },
-      ],
-      values: [
-        "既理解攻击链，也重视修复闭环",
-        "能把技术细节写成清晰文档",
-        "喜欢自己搭环境、自己复盘、自己总结",
-        "希望在安全实习中持续靠近真实业务场景",
-      ],
-      links: [
-        { label: "邮箱联系", href: "mailto:16675970815@163.com" },
-        { label: "GitHub", href: "https://github.com/your-github" },
-        { label: "博客 / 作品集", href: "#" },
-      ],
-    }),
-    []
-  );
+        /* --- 布局 --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 120px 20px 40px; }
+        section { margin-bottom: 80px; }
+        .section-title { font-size: 13px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; font-family: var(--font-mono); }
+        
+        /* --- Hero --- */
+        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
+        .hero h1 { font-size: clamp(32px, 6vw, 72px); font-weight: 800; letter-spacing: -3px; line-height: 0.9; margin-bottom: 20px; }
+        .hero p { color: var(--text-sub); font-size: 17px; max-width: 650px; margin-bottom: 40px; font-weight: 300; }
+        .btn-primary {
+            background: transparent; color: var(--accent-white); border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 28px; border-radius: 100px; font-size: 14px; cursor: pointer; transition: var(--transition);
+        }
+        .btn-primary:hover { background: var(--accent-white); color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-  const isDark = theme === "dark";
+        .info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 60px; }
+        .self-eval-block { font-size: 14px; color: #ccc; line-height: 1.8; border-right: 1px solid var(--glass-border); padding-right: 30px; }
+        .edu-block { font-size: 13px; color: var(--text-sub); }
 
-  const onPointerMove = (e) => {
-    const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setHoverPoint({ x, y });
-  };
+        /* --- Card Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .bento-card {
+            background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 24px; transition: var(--transition);
+            position: relative; overflow: hidden;
+        }
+        .bento-card:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-3px); background: rgba(255,255,255,0.03); }
+        .bento-time { font-family: var(--font-mono); font-size: 11px; color: #555; margin-bottom: 8px; display: block; }
+        .bento-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); color: #fff; background: rgba(255, 255, 255, 0.05); padding: 3px 7px; border-radius: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .click-hint { font-size: 10px; color: var(--accent-green); opacity: 0; transition: 0.3s; margin-top: 15px; display: block; font-family: var(--font-mono); }
+        .bento-card:hover .click-hint { opacity: 1; }
 
-  return (
-    <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen overflow-hidden bg-white text-zinc-900 transition-colors duration-500 dark:bg-[#050816] dark:text-zinc-100">
-        <BackgroundLayer theme={theme} hoverPoint={hoverPoint} />
+        /* --- 详情弹窗 (Modal) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            background: #08080a; border: 1px solid var(--glass-border);
+            width: 90%; max-width: 650px; padding: 40px; border-radius: 20px;
+            position: relative; transform: translateY(20px); transition: transform 0.4s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #444; font-size: 24px; cursor: pointer; transition: 0.3s; }
+        .close-btn:hover { color: #fff; }
+        .modal-body { line-height: 1.8; color: #ccc; font-size: 15px; margin-top: 20px; white-space: pre-wrap; }
 
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-white/40 backdrop-blur-xl supports-[backdrop-filter]:bg-white/35 dark:bg-black/15 dark:supports-[backdrop-filter]:bg-black/20">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-[0_8px_30px_rgba(255,255,255,0.08)] backdrop-blur-xl dark:bg-white/5">
-                <Shield className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-sm font-semibold tracking-[0.2em] text-zinc-700 dark:text-zinc-300">JUNHUI LI</div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">Portfolio / Cyber Security</div>
-              </div>
+        /* --- Terminal --- */
+        .terminal { background: #000; border: 1px solid #121212; border-radius: 12px; padding: 20px; font-family: var(--font-mono); font-size: 13px; color: #a1a1a6; }
+        .terminal-output { height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .terminal-input-group { display: flex; align-items: center; border-top: 1px dashed #222; padding-top: 15px; }
+        .terminal-input-group span { color: var(--accent-green); margin-right: 10px; }
+        .terminal-input-group input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 13px; outline: none; }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div id="custom-cursor"></div>
+
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeDetail()">&times;</button>
+            <span id="m-time" class="bento-time"></span>
+            <h2 id="m-title" style="margin-bottom: 10px;"></h2>
+            <div id="m-tag" class="bento-tag"></div>
+            <div id="m-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="#hero">档案首页</a>
+        <a href="#experience">实战与研究</a>
+        <a href="#guestbook">终端通信</a>
+    </nav>
+
+    <div class="container">
+        <section class="hero" id="hero">
+            <h1>李俊辉<span>.</span>NetSec</h1>
+            <p><strong>意向岗位：</strong>网络安全实习生</p>
+            <p style="margin-bottom: 25px;">潜行于 0 与 1 的深邃银河，以安全之矛，铸造Web防御之盾。</p>
+            
+            <div class="info-grid">
+                <div class="self-eval-block">
+                    “具备扎实的 Web 安全攻防理论基础与实战漏洞挖掘能力，熟练掌握主流安全测试工具；拥有良好的技术文档撰写与沟通逻辑，能从开发视角理解安全合规需求；学习能力强，能快速融入互联网大厂的工作节奏。”
+                </div>
+                <div class="edu-block">
+                    <span><strong>广东科技学院</strong></span><br>
+                    <span>网络空间安全 | 本科</span><br>
+                    <span>2023.09 - 2027.06</span><br>
+                    <span style="color: #fff; font-weight: 600;">GPA: 3.05</span>
+                    <div style="font-family: var(--font-mono); font-size: 11px; margin-top: 10px;">核心课程：网络安全编程、代码审计、密码学</div>
+                </div>
             </div>
 
-            <nav className="hidden items-center gap-6 text-sm text-zinc-600 dark:text-zinc-300 md:flex">
-              {[
-                ["关于我", "about"],
-                ["技能", "skills"],
-                ["项目", "projects"],
-                ["经历", "experience"],
-                ["联系", "contact"],
-              ].map(([label, id]) => (
-                <a key={id} href={`#${id}`} className="transition hover:text-zinc-950 dark:hover:text-white">
-                  {label}
-                </a>
-              ))}
-            </nav>
-
-            <Button
-              variant="outline"
-              className="rounded-2xl border-white/20 bg-white/40 backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
-              onClick={() => setTheme(isDark ? "light" : "dark")}
-            >
-              {isDark ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-              {isDark ? "日间模式" : "夜间模式"}
-            </Button>
-          </div>
-        </header>
-
-        <main>
-          <section
-            ref={heroRef}
-            onPointerMove={onPointerMove}
-            className="relative mx-auto flex min-h-[92vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8"
-          >
-            <div className="grid w-full gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="relative"
-              >
-                <GlassCard className="p-6 sm:p-8 lg:p-10">
-                  <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs text-zinc-600 backdrop-blur-xl dark:text-zinc-300">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Web Security · Secure Coding · Portfolio 2026
-                  </div>
-
-                  <div className="space-y-5">
-                    <div>
-                      <div className="mb-3 text-sm tracking-[0.35em] text-zinc-500 dark:text-zinc-400">HELLO, I’M</div>
-                      <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                        {content.name}
-                      </h1>
-                      <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-600 dark:text-zinc-300 sm:text-lg">
-                        {content.subtitle}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3 text-sm text-zinc-600 dark:text-zinc-300">
-                      <MetaPill icon={<Shield className="h-4 w-4" />} text={content.title} />
-                      <MetaPill icon={<MapPin className="h-4 w-4" />} text={content.location} />
-                      <MetaPill icon={<Mail className="h-4 w-4" />} text={content.email} />
-                    </div>
-
-                    <p className="max-w-2xl text-base leading-7 text-zinc-700 dark:text-zinc-200">
-                      {content.intro}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {content.highlights.map((item) => (
-                        <Badge
-                          key={item}
-                          className="rounded-full border border-white/10 bg-white/40 px-3 py-1 text-xs text-zinc-700 backdrop-blur-xl hover:bg-white/50 dark:bg-white/10 dark:text-zinc-200"
-                        >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex flex-wrap gap-3 pt-4">
-                      <Button asChild className="rounded-2xl px-5">
-                        <a href="#projects">
-                          查看项目
-                          <ArrowUpRight className="ml-2 h-4 w-4" />
-                        </a>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="rounded-2xl border-white/20 bg-white/40 backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
-                      >
-                        <a href={`mailto:${content.email}`}>联系我</a>
-                      </Button>
-                    </div>
-                  </div>
-                </GlassCard>
-
-                <motion.a
-                  href="#about"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                  className="mt-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
-                >
-                  向下查看完整内容
-                  <ChevronDown className="h-4 w-4 animate-bounce" />
-                </motion.a>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.15 }}
-                className="grid gap-5"
-              >
-                <GlassCard className="p-5 sm:p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">核心画像</h3>
-                    <Blocks className="h-5 w-5 text-zinc-500" />
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      ["方向", "Web安全 / 安全开发"],
-                      ["定位", "网络安全实习生"],
-                      ["风格", "能复现，也能修复"],
-                      ["特色", "技术复盘 + 文档表达"],
-                    ].map(([k, v]) => (
-                      <div key={k} className="rounded-2xl border border-white/10 bg-white/25 p-4 dark:bg-white/5">
-                        <div className="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">{k}</div>
-                        <div className="mt-2 text-sm font-medium text-zinc-800 dark:text-zinc-100">{v}</div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-
-                <GlassCard className="p-5 sm:p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">能力标签</h3>
-                    <Code2 className="h-5 w-5 text-zinc-500" />
-                  </div>
-                  <div className="space-y-3">
-                    {content.values.map((item, idx) => (
-                      <motion.div
-                        key={item}
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.15 * idx + 0.2 }}
-                        className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                      >
-                        {item}
-                      </motion.div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button class="btn-primary" onclick="document.getElementById('experience').scrollIntoView();">探索实战序列 ↓</button>
+                <span style="color: var(--text-sub); font-size: 13px; font-family: var(--font-mono);">[ IELTS: 6.5 (目标备考中) ]</span>
             </div>
-          </section>
+        </section>
 
-          <div className="mx-auto max-w-7xl space-y-6 px-4 pb-20 sm:px-6 lg:px-8">
-            <Section id="about" title="关于我" icon={<Sparkles className="h-5 w-5" />}>
-              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="space-y-4 text-sm leading-7 text-zinc-700 dark:text-zinc-200 sm:text-base">
-                    {content.about.map((paragraph) => (
-                      <p key={paragraph}>{paragraph}</p>
-                    ))}
-                  </div>
-                </GlassCard>
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="mb-4 flex items-center gap-3">
-                    <GraduationCap className="h-5 w-5 text-zinc-500" />
-                    <h3 className="text-lg font-semibold">教育信息</h3>
-                  </div>
-                  <div className="space-y-4 text-sm text-zinc-700 dark:text-zinc-200">
-                    <InfoRow label="学校" value={content.education.school} />
-                    <InfoRow label="专业" value={content.education.degree} />
-                    <InfoRow label="时间" value={content.education.period} />
-                    <InfoRow label="成绩" value={content.education.gpa} />
-                    <div>
-                      <div className="mb-2 text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">核心课程</div>
-                      <div className="flex flex-wrap gap-2">
-                        {content.education.courses.map((course) => (
-                          <Badge
-                            key={course}
-                            className="rounded-full border border-white/10 bg-white/35 px-3 py-1 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                          >
-                            {course}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
+        <section id="experience">
+            <div class="section-title">核心实战档案 // ARCHIVES (点击查看详情)</div>
+            <div class="grid" id="exp-grid"></div>
+        </section>
 
-            <Section id="skills" title="相关技能" icon={<Code2 className="h-5 w-5" />}>
-              <div className="grid gap-5 md:grid-cols-2">
-                {content.skills.map((skill) => (
-                  <GlassCard key={skill.group} className="p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{skill.group}</h3>
-                      <BadgeCheck className="h-5 w-5 text-zinc-500" />
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.items.map((item) => (
-                        <Badge
-                          key={item}
-                          className="rounded-full border border-white/10 bg-white/35 px-3 py-1.5 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                        >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Section>
-
-            <Section id="projects" title="项目经历" icon={<FileCode2 className="h-5 w-5" />}>
-              <div className="grid gap-5">
-                {content.projects.map((project, index) => (
-                  <motion.div
-                    key={project.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.45, delay: index * 0.08 }}
-                  >
-                    <GlassCard className="p-6 sm:p-7">
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div>
-                          <div className="text-xs uppercase tracking-[0.25em] text-zinc-500 dark:text-zinc-400">
-                            {project.period}
-                          </div>
-                          <h3 className="mt-2 text-xl font-semibold">{project.title}</h3>
-                          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{project.role}</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <Badge
-                              key={tag}
-                              className="rounded-full border border-white/10 bg-white/35 px-3 py-1 text-xs text-zinc-700 dark:bg-white/10 dark:text-zinc-200"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="mt-5 grid gap-3">
-                        {project.points.map((point) => (
-                          <div
-                            key={point}
-                            className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                          >
-                            {point}
-                          </div>
-                        ))}
-                      </div>
-                    </GlassCard>
-                  </motion.div>
-                ))}
-              </div>
-            </Section>
-
-            <Section id="experience" title="竞赛与经历" icon={<Trophy className="h-5 w-5" />}>
-              <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-                <GlassCard className="p-6">
-                  <div className="space-y-4">
-                    {content.experience.map((item) => (
-                      <div key={item.title} className="rounded-2xl border border-white/10 bg-white/25 p-4 dark:bg-white/5">
-                        <div className="text-base font-semibold">{item.title}</div>
-                        <p className="mt-2 text-sm leading-6 text-zinc-700 dark:text-zinc-200">{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-
-                <GlassCard className="p-6">
-                  <div className="mb-4 text-lg font-semibold">你会在这个网站里看到什么</div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      "银河背景和轻量星光交互",
-                      "一键日间 / 夜间模式切换",
-                      "移动端与 PC 自适应布局",
-                      "模糊玻璃卡片与层次化信息",
-                      "细节过渡动画但不过度炫技",
-                      "适合作为 GitHub 主页或个人作品站",
-                    ].map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-2xl border border-white/10 bg-white/25 p-4 text-sm leading-6 text-zinc-700 dark:bg-white/5 dark:text-zinc-200"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
-
-            <Section id="contact" title="联系与链接" icon={<Mail className="h-5 w-5" />}>
-              <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="space-y-4">
-                    <InfoRow label="邮箱" value={content.email} />
-                    <InfoRow label="城市" value={content.location} />
-                    <InfoRow label="方向" value="网络安全实习 / Web安全 / 安全开发" />
-                    <p className="pt-2 text-sm leading-7 text-zinc-700 dark:text-zinc-200">
-                      这版主页刻意保持克制：有氛围、有细节、有交互，但不会让访客被特效分散注意力。
-                      重点还是把你的能力、项目与成长路径讲清楚。
-                    </p>
-                  </div>
-                </GlassCard>
-
-                <GlassCard className="p-6 sm:p-7">
-                  <div className="mb-4 text-lg font-semibold">外部链接</div>
-                  <div className="grid gap-3">
-                    {content.links.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        className="group rounded-2xl border border-white/10 bg-white/25 p-4 transition hover:translate-y-[-2px] hover:bg-white/35 dark:bg-white/5 dark:hover:bg-white/10"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <div className="text-sm font-medium">{link.label}</div>
-                            <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">点击跳转</div>
-                          </div>
-                          <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </GlassCard>
-              </div>
-            </Section>
-          </div>
-        </main>
-      </div>
+        <section id="guestbook">
+            <div class="section-title">加密通信信道 // TERMINAL GUESTBOOK</div>
+            <div class="terminal">
+                <div class="terminal-output" id="msg-board"></div>
+                <form class="terminal-input-group" id="msg-form">
+                    <span>visitor@netsec:~$</span>
+                    <input type="text" id="msg-input" placeholder="输入指令或留言，按回车发送..." autocomplete="off" required>
+                </form>
+            </div>
+        </section>
     </div>
-  );
-}
 
-function Section({ id, title, icon, children }) {
-  return (
-    <section id={id} className="scroll-mt-28">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/25 backdrop-blur-xl dark:bg-white/5">
-          {icon}
-        </div>
-        <div>
-          <h2 className="text-2xl font-semibold sm:text-3xl">{title}</h2>
-          <div className="mt-1 h-px w-16 bg-zinc-300 dark:bg-white/20" />
-        </div>
-      </div>
-      {children}
-    </section>
-  );
-}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        /* --- 1. Three.js 写实银河背景 (保留) --- */
+        const canvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+        camera.position.z = 500;
+        const total_stars = 15000;
+        const positions = new Float32Array(total_stars * 3);
+        for (let i = 0; i < total_stars; i++) {
+            positions[i*3] = (Math.random()-0.5)*2000;
+            positions[i*3+1] = (Math.random()-0.5)*2000;
+            positions[i*3+2] = (Math.random()-0.5)*2000;
+        }
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ size: 1.8, color: 0xffffff, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+        const stars = new THREE.Points(geometry, material);
+        scene.add(stars);
 
-function GlassCard({ className = "", children }) {
-  return (
-    <Card className={`overflow-hidden rounded-[28px] border border-white/10 bg-white/35 shadow-[0_10px_50px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:bg-white/5 dark:shadow-[0_10px_60px_rgba(0,0,0,0.35)] ${className}`}>
-      <CardContent className="p-0">{children}</CardContent>
-    </Card>
-  );
-}
+        /* --- 2. 交互逻辑 (保留) --- */
+        const cursor = document.getElementById('custom-cursor');
+        let mouse_x = 0, mouse_y = 0;
+        window.addEventListener('mousemove', e => {
+            mouse_x = (e.clientX/window.innerWidth)*2-1;
+            mouse_y = -(e.clientY/window.innerHeight)*2+1;
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
-function InfoRow({ label, value }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-3 text-sm last:border-none last:pb-0">
-      <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{label}</span>
-      <span className="text-right text-zinc-800 dark:text-zinc-100">{value}</span>
-    </div>
-  );
-}
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0006;
+            stars.rotation.x += (mouse_y*0.05 - stars.rotation.x)*0.05;
+            renderer.render(scene, camera);
+        }
+        animate();
 
-function MetaPill({ icon, text }) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/35 px-3 py-2 backdrop-blur-xl dark:bg-white/10">
-      {icon}
-      <span>{text}</span>
-    </div>
-  );
-}
+        /* --- 3. 简历数据渲染 + 详情功能 --- */
+        const defaultExps = [
+            { 
+                id: 1, 
+                time: "2025.11 - 2025.12", 
+                title: "PHP新闻系统开发与安全加固", 
+                tag: "全栈开发 / 代码审计", 
+                shortDesc: "独立开发新闻系统，全站应用 PDO 预编译，终结 SQL 注入风险。",
+                details: "【项目背景】为了深入理解 Web 漏洞成因，从零构建了一套具备完整 CURD 功能的新闻管理系统。\n\n【核心安全实现】\n1. 防御 SQL 注入：全面弃用传统的字符串拼接方式，使用 PDO 预编译指令处理所有数据库交互。\n2. 防御 XSS：在输出端实施了严格的 HTML 实体转义。\n3. 权限加固：修复了 IDOR（越权漏洞），确保用户只能编辑属于自己的文章。"
+            },
+            { 
+                id: 2, 
+                time: "2025.12 - 至今", 
+                title: "Web 漏洞攻防演练与原理分析", 
+                tag: "靶场实战 / BurpSuite", 
+                shortDesc: "基于 Pikachu 靶场，完整复现攻击链，输出代码级修复方案。",
+                details: "【攻防实战】在本地环境部署多个主流靶场，针对 OWASP Top 10 漏洞进行专项突破。\n\n【关键成果】\n1. 漏洞挖掘：熟练使用 Burp Suite 进行抓包分析、参数爆破以及 Intruder 攻击。\n2. 原理深挖：不局限于工具利用，通过分析 PHP 源代码理解漏洞产生的物理逻辑。\n3. 报告撰写：记录每一个漏洞的 Payload 构造过程及有效的后端修复建议。"
+            },
+            { 
+                id: 3, 
+                time: "2025", 
+                title: "湾区杯&羊城杯 CTF 实战", 
+                tag: "竞赛经历 / Writeup", 
+                shortDesc: "针对 Web 赛题攻关，识别文件上传与注入漏洞，赛后复盘输出技术 Writeup。",
+                details: "【竞赛复盘】参与大湾区及羊城杯网络安全竞赛，负责 Web 方向题目的解题。\n\n【实战技巧】\n1. 快速扫描：识别敏感目录与源码泄露（.git/.svn）。\n2. 漏洞组合拳：利用文件上传绕过结合条件竞争（Race Condition）获取 WebShell。\n3. 文档沉淀：赛后通过撰写详细的 Writeup，系统化复盘解题思路与工具链优化。"
+            }
+        ];
 
-function BackgroundLayer({ theme, hoverPoint }) {
-  const stars = Array.from({ length: 44 }, (_, i) => ({
-    id: i,
-    top: `${(i * 17) % 100}%`,
-    left: `${(i * 13 + 7) % 100}%`,
-    size: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1.5,
-    delay: `${(i % 9) * 0.4}s`,
-    duration: `${3 + (i % 5)}s`,
-  }));
+        // 渲染卡片
+        const grid = document.getElementById('exp-grid');
+        grid.innerHTML = defaultExps.map(exp => `
+            <div class="bento-card" onclick="openDetail(${exp.id})">
+                <span class="bento-time">${exp.time}</span>
+                <h3 style="margin-bottom: 8px; font-size: 17px;">${exp.title}</h3>
+                <div class="bento-tag">${exp.tag}</div>
+                <p style="color: var(--text-sub); font-size: 13px;">${exp.shortDesc}</p>
+                <span class="click-hint">READ MORE // 查阅详情 _</span>
+            </div>
+        `).join('');
 
-  return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <AnimatePresence mode="wait">
-        {theme === "dark" ? (
-          <motion.div
-            key="dark-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(72,102,255,0.16),_transparent_32%),radial-gradient(circle_at_80%_20%,_rgba(255,255,255,0.10),_transparent_18%),radial-gradient(circle_at_bottom,_rgba(113,33,255,0.18),_transparent_28%),linear-gradient(180deg,_#060816_0%,_#04050d_45%,_#020308_100%)]" />
-            <motion.div
-              className="absolute h-[36rem] w-[36rem] rounded-full bg-white/10 blur-[120px]"
-              animate={{ x: `${hoverPoint.x - 45}%`, y: `${hoverPoint.y - 35}%` }}
-              transition={{ type: "spring", damping: 22, stiffness: 80 }}
-            />
-            {stars.map((star) => (
-              <motion.span
-                key={star.id}
-                className="absolute rounded-full bg-white"
-                style={{
-                  top: star.top,
-                  left: star.left,
-                  width: star.size,
-                  height: star.size,
-                  boxShadow: "0 0 12px rgba(255,255,255,0.85)",
-                }}
-                animate={{ opacity: [0.25, 1, 0.35], scale: [1, 1.6, 1] }}
-                transition={{
-                  duration: parseFloat(star.duration),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: parseFloat(star.delay),
-                }}
-              />
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="light-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(244,247,255,0.92)_32%,_rgba(232,238,250,0.95)_100%),radial-gradient(circle_at_15%_20%,_rgba(120,140,255,0.10),_transparent_18%),radial-gradient(circle_at_85%_22%,_rgba(255,255,255,0.85),_transparent_14%),linear-gradient(180deg,_#f7f9ff_0%,_#eef3ff_45%,_#e8eef8_100%)]" />
-            <motion.div
-              className="absolute h-[30rem] w-[30rem] rounded-full bg-white/70 blur-[120px]"
-              animate={{ x: `${hoverPoint.x - 40}%`, y: `${hoverPoint.y - 28}%` }}
-              transition={{ type: "spring", damping: 24, stiffness: 70 }}
-            />
-            {stars.slice(0, 20).map((star) => (
-              <motion.span
-                key={star.id}
-                className="absolute rounded-full bg-white/90"
-                style={{
-                  top: star.top,
-                  left: star.left,
-                  width: star.size,
-                  height: star.size,
-                  boxShadow: "0 0 10px rgba(255,255,255,0.9)",
-                }}
-                animate={{ opacity: [0.18, 0.6, 0.2] }}
-                transition={{
-                  duration: parseFloat(star.duration) + 1,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: parseFloat(star.delay),
-                }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+        // 弹窗逻辑
+        const modal = document.getElementById('detail-modal');
+        function openDetail(id) {
+            const exp = defaultExps.find(e => e.id === id);
+            document.getElementById('m-title').innerText = exp.title;
+            document.getElementById('m-time').innerText = exp.time;
+            document.getElementById('m-tag').innerText = exp.tag;
+            document.getElementById('m-body').innerText = exp.details;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
 
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-[0.08] dark:opacity-[0.06]" />
-    </div>
-  );
-}
+        function closeDetail() {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // 点击背景关闭
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeDetail();
+        });
+
+        /* --- 4. 终端修复 (保留功能) --- */
+        const msgForm = document.getElementById('msg-form');
+        const msgInput = document.getElementById('msg-input');
+        const msgBoard = document.getElementById('msg-board');
+
+        msgBoard.innerHTML = `<div><span style="color:#444;">[00:00:00]</span> 系统已挂载，详情查阅协议已激活。</div>`;
+
+        msgForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const val = msgInput.value.trim();
+            if (!val) return;
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+            const newMsg = document.createElement('div');
+            newMsg.innerHTML = `<span style="color:#444;">[${timeStr}]</span> <span style="color:var(--accent-white);">Visitor:</span> ${val}`;
+            msgBoard.appendChild(newMsg);
+            msgBoard.scrollTop = msgBoard.scrollHeight;
+            msgInput.value = '';
+        });
+    </script>
+</body>
+</html>
